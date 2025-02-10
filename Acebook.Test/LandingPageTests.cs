@@ -22,6 +22,6 @@ public class LandingPageTests
   {
     driver.Navigate().GoToUrl("http://127.0.0.1:5287");
     IWebElement greeting = driver.FindElement(By.Id("greeting"));
-    Assert.AreEqual("Welcome To Acebook", greeting.GetAttribute("innerHTML"));
+    Assert.That(greeting.GetAttribute("innerHTML"), Is.EqualTo("Welcome To Acebook"));
   }
 }

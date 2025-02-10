@@ -19,18 +19,19 @@ public class PostsController : Controller
     [HttpGet]
     public IActionResult Index() {
       AcebookDbContext dbContext = new AcebookDbContext();
-      List<Post> posts = dbContext.Posts.ToList();
+      List<Post> posts = dbContext.Posts?.ToList() ?? new List<Post>();
       ViewBag.Posts = posts;
       return View();
     }
 
     [Route("/posts")]
     [HttpPost]
-    public RedirectResult Create(Post post) {
+    public RedirectResult Create(Post post) 
+    {
       AcebookDbContext dbContext = new AcebookDbContext();
       int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
       post.UserId = currentUserId;
-      dbContext.Posts.Add(post);
+      dbContext.Posts?.Add(post);
       dbContext.SaveChanges();
       return new RedirectResult("/posts");
     }
