@@ -22,7 +22,7 @@ public class UsersController : Controller
 
     [Route("/users")]
     [HttpPost]
-    public RedirectResult Create(User user) {
+    public IActionResult Create(User user) {
         AcebookDbContext dbContext = new AcebookDbContext();
         dbContext.Users?.Add(user);
         dbContext.SaveChanges();
