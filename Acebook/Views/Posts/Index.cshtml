@@ -1,11 +1,50 @@
-<h1>Posts</h1>
+<h2>Add Posts</h2>
 
-<form action="/posts" method="post">
-  <input type="text" name="content"/>
-  <input type="submit" value="Submit"/>
+<form action="/posts" method="post" enctype="multipart/form-data">
+  <!-- Label for PostText -->
+  <p>
+    <label for="PostText">Post Content</label>
+    <input type="text" id="PostText" name="PostText" />
+  </p>
+
+  <!-- Label for PostImage (URL) -->
+  <p>
+    <label for="PostImageUrl">Post Image</label>
+    <input type="text" id="PostImageUrl" name="PostImageUrl" placeholder="Enter image URL" />
+    <span>or</span>
+    <input type="file" id="PostImageFile" name="PostImageFile" />
+  </p>
+
+  <!-- Submit button -->
+  <p>
+    <input type="submit" id="submit" value="Submit" />
+  </p>
 </form>
 
+<h2>All Posts</h2>
 @foreach (Post post in ViewBag.Posts)
 {
-  <p>@post.Content</p>
+    <p>@post.PostText</p>
+    @if (!string.IsNullOrEmpty(post.PostImage))
+    {
+        @if (post.PostImage.StartsWith("http"))
+        {
+            <img src="@post.PostImage" alt="Post Image" style="max-width: 40%; height: auto;" />
+        }
+        else
+        {
+            <img src="@post.PostImage" alt="Post Image" style="max-width: 40%; height: auto;" />
+        }
+    }
 }
+    <!-- Display Error Message if Present -->
+    @{
+        var errorMessage = TempData["ErrorMessage"];
+    }
+
+    @if (errorMessage != null)
+    {
+        <div class="alert alert-danger text-center">
+            @errorMessage
+        </div>
+    }
