@@ -1,6 +1,32 @@
-<form action="/users" method="post">
-  <input type='text' id='name' name='name' placeholder='name' />
-  <input type='text' id='email' name='email' placeholder='email' />
-  <input type='password' id='password' name='password'/>
-  <input type='submit' id='submit' value='Submit' />
+@model acebook.Models.User
+
+
+<form class ="login-form" asp-action="Create" method="post">
+    <fieldset>
+        <legend>Create Account</legend>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group" style="display: flex; gap: 10px;">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a href="/signin" class="btn btn-primary">Login</a>
+    </div>
+    </fieldset>
 </form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

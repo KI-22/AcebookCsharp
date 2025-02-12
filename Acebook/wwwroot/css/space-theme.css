@@ -1,0 +1,46 @@
+.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh; /* Adjust to keep space for navbar and footer */
+    text-align: center;
+}
+
+.home-box {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    max-width: 600px;
+    width: 90%;
+}
+
+.home h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #b489dd;
+    text-shadow: 0px 0px 15px #b489dd;
+    margin-bottom: 20px;
+}
+
+/* Buttons */
+.home-buttons a {
+    display: inline-block;
+    background: rgba(180, 85, 255, 0.8);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 25px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 0px 10px rgba(180, 85, 255, 0.5);
+}
+
+.home-buttons a:hover {
+    background: rgba(210, 105, 255, 1);
+    transform: scale(1.05);
+    box-shadow: 0px 0px 15px rgba(210, 105, 255, 0.8);
+}

@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using acebook.Models;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace acebook.Controllers;
 
@@ -24,21 +26,40 @@ public class SessionsController : Controller
     [HttpPost]
     public RedirectResult Create(string email, string password) {
       AcebookDbContext dbContext = new AcebookDbContext();
-      User? user = dbContext.Users?.Where(user => user.Email == email).First();
-      if(user != null && user.Password == password)
-      {
-        HttpContext.Session.SetInt32("user_id", user.Id);
-        return new RedirectResult("/posts");
-      }
-      else
-      {
+      User? user = dbContext.Users?.Where(user => user.Email == email).FirstOrDefault();
+      if (user != null)
+        {
+            var passwordHasher = new PasswordHasher<User>();
+            var result = user.Password != null ? passwordHasher.VerifyHashedPassword(user, user.Password, password) : PasswordVerificationResult.Failed;
+
+            if (result == PasswordVerificationResult.Success)
+            {
+                if (HttpContext.Session != null)
+                {
+                    HttpContext.Session.SetString("UserEmail", user.Email ?? string.Empty);
+                    HttpContext.Session.SetInt32("user_id", user.Id);
+                    HttpContext.Session.SetString("Username", user.Name ?? string.Empty);
+                }
+                return new RedirectResult("/posts");
+            }
+        }
+
+        TempData["ErrorMessage"] = "Invalid email or password.";
         return new RedirectResult("/signin");
-      }
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    [Route("/signout")]
+    [HttpPost]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        Response.Cookies.Delete("AspNetCore.Cookies");
+        return new RedirectResult("/signin");
     }
 }

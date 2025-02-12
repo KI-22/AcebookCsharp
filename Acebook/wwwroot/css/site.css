@@ -16,3 +16,63 @@ html {
 body {
   margin-bottom: 60px;
 }
+.login-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 1em;
+  border: 1px solid #ccc;
+  border-radius: 1em;
+}
+
+.login-form legend {
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.login-form .form-group {
+  margin-bottom: 1em;
+}
+
+.login-form .control-label {
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.login-form .form-control {
+  width: 100%;
+  padding: 0.5em;
+  box-sizing: border-box;
+}
+
+
+.login-form .btn-primary {
+    display: inline-block;
+    background: rgba(180, 85, 255, 0.8);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 25px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 0px 10px rgba(180, 85, 255, 0.5);
+}
+
+.login-form .btn-primary:hover {
+  background: rgba(210, 105, 255, 1);
+    transform: scale(1.05);
+    box-shadow: 0px 0px 15px rgba(210, 105, 255, 0.8);
+}
+
+
+.login-form .alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  padding: 0.75em 1.25em;
+  margin-bottom: 1em;
+  border: 1px solid transparent;
+  border-radius: 0.25em;
+}
+

@@ -1,0 +1,40 @@
+@model acebook.Models.User
+
+<form class="login-form" asp-action="Edit" method="post" enctype="multipart/form-data">
+    <fieldset>
+        <legend>Edit Profile Info</legend>
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Upload Profile Picture</label>
+            <input type="file" name="profilePictureFile" class="form-control" accept="image/*" />
+        </div>
+
+        <div class="form-group">
+            <label>Or Enter an Image URL</label>
+            <input asp-for="profilePicture" class="form-control" />
+            <span asp-validation-for="profilePicture" class="text-danger"></span>
+        </div>
+        <div class="form-group mt-3">
+            <a href="/@Model.Name/change-password" class="btn change-password-button">Change Password</a>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Update" class="btn btn-primary" />
+        </div>
+    </fieldset>
+</form>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

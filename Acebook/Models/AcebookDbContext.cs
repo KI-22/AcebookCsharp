@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class AcebookDbContext : DbContext
 {
+
     public DbSet<Post>? Posts { get; set; }
     public DbSet<User>? Users { get; set; }
 
