@@ -4,7 +4,7 @@
 <div class="profile-buttons">
     @if (Context.Session.GetString("Username") == Model.Name)
     {
-        <a href="@Url.Action("Edit", new { username = Model.Name })" class="btn btn-primary">Account</a>
+        <a href="@Url.Action("Edit", new { username = Model.Name })" class="btn btn-primary">Edit Profile</a>
     }
     <form action="@Url.Action("Logout", "Sessions")" method="post" style="display:inline;">
         <button type="submit" class="btn btn-secondary">Logout</button>
@@ -29,7 +29,7 @@
     </div>
 
     <div class="posts-container">
-        <h2>@ViewBag.ProfileUserName's Posts</h2>
+        <h2>@Model.Name's Posts</h2>
         @{
             var posts = ViewBag.CurrentUsersPosts as IEnumerable<Post>;
         }
