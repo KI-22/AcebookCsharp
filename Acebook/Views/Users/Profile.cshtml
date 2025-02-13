@@ -1,9 +1,10 @@
 @model acebook.Models.User
+@using acebook.Models
 
 <div class="profile-buttons">
     @if (Context.Session.GetString("Username") == Model.Name)
     {
-        <a href="@Url.Action("Edit", new { username = Model.Name })" class="btn btn-primary">Edit Profile</a>
+        <a href="@Url.Action("Edit", new { username = Model.Name })" class="btn btn-primary">Account</a>
     }
     <form action="@Url.Action("Logout", "Sessions")" method="post" style="display:inline;">
         <button type="submit" class="btn btn-secondary">Logout</button>
@@ -28,19 +29,29 @@
     </div>
 
     <div class="posts-container">
-        <h2>Posts</h2>
-        <ul>
-            @if (Model.Posts != null)
-            {
-                @foreach (var post in Model.Posts)
+        <h2>@ViewBag.ProfileUserName's Posts</h2>
+        @{
+            var posts = ViewBag.CurrentUsersPosts as IEnumerable<Post>;
+        }
+        @if (posts != null && posts.Any())
+        {
+            <ul>
+                @foreach (var post in posts)
                 {
-                    <li>@post.Content</li>
+                    <li>
+                        <p>@post.PostText</p>
+                        @if (!string.IsNullOrEmpty(post.PostImage))
+                        {
+                            <img src="@post.PostImage" alt="Post Image" style="max-width: 40%; height: auto;" />
+                        }
+                        <p class="post-meta">Posted on: @post.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
+                    </li>
                 }
-            }
-            else
-            {
-                <li>No posts yet</li>
-            }
-        </ul>
+            </ul>
+        }
+        else
+        {
+            <p>No posts attached.</p>
+        }
     </div>
 </div>

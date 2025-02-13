@@ -18,14 +18,41 @@ public class PostsController : Controller
 
     [Route("/posts")]
     [HttpGet]
-    public IActionResult Index() {
-    AcebookDbContext dbContext = new AcebookDbContext();
-    List<Post> posts = dbContext.Posts?
+    public IActionResult Index()
+    {
+        AcebookDbContext dbContext = new AcebookDbContext();  // Direct instantiation
+        int? currentUserId = HttpContext.Session.GetInt32("user_id");
+
+        // Check if the user is logged in (currentUserId is null)
+        if (currentUserId == null)
+        {
+            return RedirectToAction("Signin", "Sessions");
+        }
+
+        // Get the current user from the database using the userId
+        User? currentUser = dbContext.Users?.FirstOrDefault(u => u.Id == currentUserId.Value);
+        if (currentUser != null)
+        {
+            ViewBag.CurrentUser = currentUser;
+            ViewBag.ProfileUserName = currentUser.Name;
+        }
+
+        // Get all posts, including user info (ordered by CreatedAt descending)
+        List<Post> posts = dbContext.Posts?
             .Include(p => p.User)
-            .OrderByDescending(p => p.CreatedAt) 
+            .OrderByDescending(p => p.CreatedAt)
             .ToList() ?? new List<Post>();
-    ViewBag.Posts = posts;
-    return View();
+        ViewBag.Posts = posts;
+
+        // Get only the posts created by the current user
+        List<Post> currentUsersPosts = dbContext.Posts?
+            .Include(r => r.User)
+            .Where(r => r.UserId == currentUserId.Value)  // Filter by current user's ID
+            .OrderByDescending(r => r.CreatedAt)
+            .ToList() ?? new List<Post>();
+        ViewBag.CurrentUsersPosts = currentUsersPosts;
+
+        return View();
     }
 
     [Route("/posts")]

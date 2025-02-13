@@ -1,0 +1,189 @@
+.post-container {
+    display: flex;
+    align-items: flex-start;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 15%;
+    text-align: center;
+    margin-right: 15px;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 5px;
+}
+
+.user-name {
+    font-weight: bold;
+    color: #333;
+    margin-top: 0px;
+    text-align: center;
+}
+
+.post-content {
+    width: 85%;
+}
+
+.post-text {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.post-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-top: 10px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.post-meta {
+    font-size: 10px; /* Smaller font size */
+    color: gray;
+    margin-top: 5px;
+    position: absolute;
+    bottom: 5px; /* Moves the date to the bottom */
+    left: 15px; /* Moves it to the left corner */
+}
+
+.reactions {
+    position: absolute;
+    bottom: 32px;
+    right: 16px;
+    display: flex;
+    gap: 15px;
+}
+
+.like-count, .comment-count {
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.like-count::before {
+    content: "👍";
+}
+
+.comment-count::before {
+    content: "💬";
+}
+
+.post-form {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    margin: 20px auto;
+}
+
+.post-form .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.input-container {
+    flex-grow: 1;
+}
+
+.post-input {
+    width: 180%;
+    height: 100px;
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    resize: none;
+}
+
+.image-upload {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 5px;
+}
+
+.image-input, .file-input {
+    width: 100px;
+    padding: 4px;
+    font-size: 10px;
+}
+
+.post-btn {
+    background: rgba(180, 85, 255, 0.8);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+@media (max-width: 768px) {
+    .post-container {
+        width: 90%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .user-info {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .post-content {
+        width: 100%;
+    }
+
+    .post-form {
+        width: 90%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .image-upload {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .post-btn {
+        width: 100%;
+        margin-top: 5px;
+    }
+    .post-meta-date {
+        font-size: 3px;  
+        color: gray;
+        margin-top: 5px;
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        line-height: 1;  
+    }
+}
