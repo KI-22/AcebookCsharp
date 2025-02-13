@@ -11,24 +11,40 @@
     </form>
 </div>
 
-<div class="profile-container">
-    @if (!string.IsNullOrEmpty(Model.profilePicture))
-    {
-        <img src="@Model.profilePicture" alt="@Model.Name's Profile Picture" class="profile-picture" />
-    }
-    else
-    {
-        <p>No profile picture set.</p>
-    }
-
-    <h1 class="profile-username">@Model.Name</h1>
-
-    <div class="post-box">
-        <textarea placeholder="Write something..."></textarea>
-        <button>Post</button>
+<div class="profile-container-profile">
+    <div class="user-info-profile">
+        @if (!string.IsNullOrEmpty(Model.profilePicture))
+        {
+            <img src="@Model.profilePicture" alt="@Model.Name's Profile Picture" class="profile-pic-profile" />
+        }
+        else
+        {
+            <p>No profile picture set.</p>
+        }
+        <h1 class="user-name-profile">@Model.Name</h1>
     </div>
 
-    <div class="posts-container">
+<div class="post-form-profile">
+    <img src="@Model.profilePicture" alt="Profile" class="profile-pic-profile" />
+    <form action="/posts" method="post" enctype="multipart/form-data">
+        <!-- Hidden field to store the ReturnUrl -->
+        <input type="hidden" name="ReturnUrl" value="@Context.Request.Path.Value" />
+        
+        <div class="input-container">
+            <input type="text" id="PostText" name="PostText" placeholder="What's on your mind?" class="post-input" />
+        </div>
+        <div class="image-upload">
+            <label for="PostImageUrl"></label>
+            <input type="text" id="PostImageUrl" name="PostImageUrl" placeholder="Enter image URL" class="image-input" />
+            <span>or</span>
+            <input type="file" id="PostImageFile" name="PostImageFile" class="file-input" />
+            <button type="submit" class="post-btn">Post</button>
+        </div>
+    </form>
+</div>
+
+
+    <div class="posts-container-profile">
         <h2>@Model.Name's Posts</h2>
         @{
             var posts = ViewBag.CurrentUsersPosts as IEnumerable<Post>;
@@ -38,20 +54,31 @@
             <ul>
                 @foreach (var post in posts)
                 {
-                    <li>
-                        <p>@post.PostText</p>
-                        @if (!string.IsNullOrEmpty(post.PostImage))
-                        {
-                            <img src="@post.PostImage" alt="Post Image" style="max-width: 40%; height: auto;" />
-                        }
-                        <p class="post-meta">Posted on: @post.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
+                    <li class="post-container-profile">
+                        <div class="user-info-profile">
+                            <img src="@Model.profilePicture" alt="Profile" class="profile-pic-profile" />
+                            <span class="user-name-profile">@Model.Name</span>
+                        </div>
+                        <div class="post-content-profile">
+                            <p class="post-text-profile">@post.PostText</p>
+                            @if (!string.IsNullOrEmpty(post.PostImage))
+                            {
+                                <img src="@post.PostImage" alt="Post Image" class="post-image-profile" />
+                            }
+                            <p class="post-meta-profile">Posted on: @post.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
+                            <!-- Reactions Section -->
+                            <div class="reactions-profile">
+                                <span class="like-count-profile">0</span>
+                                <span class="comment-count-profile">0</span>
+                            </div>
+                        </div>
                     </li>
                 }
             </ul>
         }
         else
         {
-            <p>No posts attached.</p>
+            <p>No posts available.</p>
         }
     </div>
 </div>

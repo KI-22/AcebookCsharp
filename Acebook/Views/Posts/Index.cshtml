@@ -26,6 +26,9 @@
         alt="User Profile Picture" class="profile-pic" />
 
     <form action="/posts" method="post" enctype="multipart/form-data">
+        <!-- Hidden field to store the ReturnUrl -->
+        <input type="hidden" name="ReturnUrl" value="@Context.Request.Path.Value" />
+        
         <div class="input-container">
             <input type="text" id="PostText" name="PostText" placeholder="What's on your mind?" class="post-input" />
         </div>
@@ -39,6 +42,7 @@
         </div>
     </form>
 </div>
+
 
 @foreach (Post post in ViewBag.Posts)
 {
