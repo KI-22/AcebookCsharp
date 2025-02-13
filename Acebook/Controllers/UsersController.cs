@@ -76,6 +76,13 @@ public class UsersController : Controller
         {
             return NotFound();
         }
+        List<Post> userPosts = await dbContext.Posts
+            .Where(p => p.UserId == user.Id)
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync();
+
+        // Store the posts in ViewBag so the Profile page can access them
+        ViewBag.CurrentUsersPosts = userPosts;
 
         return View(user);
         }

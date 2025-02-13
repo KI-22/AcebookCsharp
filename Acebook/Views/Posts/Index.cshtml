@@ -14,7 +14,7 @@
 <div class="profile-buttons">
     @if (Context.Session.GetString("Username") == ViewBag.ProfileUserName)
     {
-        <a href="@Url.Action("Edit", new { username = ViewBag.ProfileUserName })" class="btn btn-primary">Account</a>
+        <a href="@Url.Action("Profile", "Users", new { username = ViewBag.ProfileUserName })" class="btn btn-primary">Profile</a>
     }
     <form action="@Url.Action("Logout", "Sessions")" method="post" style="display:inline;">
         <button type="submit" class="btn btn-secondary">Logout</button>
