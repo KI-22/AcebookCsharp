@@ -95,3 +95,22 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 ```shell
 ; dotnet ef database update CreatePostsAndUsers
 ```
+#### Pull Request Feature/AddAndListPosts
+
+- When a user logs in, they can see all posts displayed in chronological order, with the newest posts appearing first. Each post includes the username and profile image of the author, displayed next to the post content. A timestamp is shown below each post, indicating when it was created.
+
+- Posts also include placeholders for the number of comments and reactions.
+
+- On the /posts page, there is a form positioned above the posts where users can add new posts. The form includes the user's profile picture and allows users to create posts in three ways:
+
+  Text only
+  Text with an image URL
+  Text with an uploaded image file
+  If a user attempts to submit an empty post, they receive an error message.
+
+- Testing for post creation was conducted using Bogus.Faker.Net and ChromeDriver, and all tests successfully validated the post submission rules.
+
+- The /posts page also includes Account and Logout buttons.
+
+  The Logout button ends the session and redirects the user to the login page.
+  The Account page is currently non-functional and needs further development.
