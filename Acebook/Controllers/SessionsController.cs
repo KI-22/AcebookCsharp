@@ -25,9 +25,14 @@ public class SessionsController : Controller
     [Route("/signin")]
     [HttpPost]
     public IActionResult Create(string email, string password) {
-      AcebookDbContext dbContext = new AcebookDbContext();
-      User? user = dbContext.Users?.Where(user => user.Email == email).FirstOrDefault();
-      if (user != null)
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        {
+            TempData["ErrorMessage"] = "Email and password are required.";
+            return new RedirectResult("/signin");
+        }
+        AcebookDbContext dbContext = new AcebookDbContext();
+        User? user = dbContext.Users?.Where(user => user.Email == email).FirstOrDefault();
+        if (user != null)
         {
             var passwordHasher = new PasswordHasher<User>();
             var result = user.Password != null ? passwordHasher.VerifyHashedPassword(user, user.Password, password) : PasswordVerificationResult.Failed;
