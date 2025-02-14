@@ -43,7 +43,6 @@
 @foreach (Post post in ViewBag.Posts)
 {
     <div class="post-container">
-      
         <div class="user-info">
             <img src="@(string.IsNullOrEmpty(post.User?.profilePicture) ? "/images/default-profile.png" : post.User.profilePicture)" 
                 alt="User Profile Picture" class="profile-pic" />

@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Friendship Page";
+}
+
+<div class="text-center">
+    <h1>Your Acebook Friendships</h1>
+
+    <a href="@Url.Action("SendFriendRequest", "Friendships")" class="btn btn-primary">Add a Friend</a>
+
+    @foreach (Friendship friendship in ViewBag.Friendship)
+    {
+
+    }
+
+</div>
