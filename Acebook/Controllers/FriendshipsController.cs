@@ -6,6 +6,7 @@ using acebook.ActionFilters;
 
 namespace acebook.Controllers;
 
+[ServiceFilter(typeof(AuthenticationFilter))]
 public class FriendshipsController : Controller
 {
 
@@ -38,7 +39,15 @@ public class FriendshipsController : Controller
     {
         AcebookDbContext dbContext = new AcebookDbContext();
 
-        int senderId = 5;
+        int? CurrentUserId = HttpContext.Session.GetInt32("user_id");
+
+        // Check if the user is logged in (currentUserId is null)
+        if (CurrentUserId == null)
+        {
+            return RedirectToAction("Signin", "Sessions");
+        }
+
+        int senderId = CurrentUserId.Value;
 
         var existingRequest = await dbContext.Friendships.FirstOrDefaultAsync(f => f.User1Id == senderId && f.User2Id == receiverId);
         if (existingRequest != null)
