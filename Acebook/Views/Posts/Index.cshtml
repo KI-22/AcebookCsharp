@@ -43,37 +43,50 @@
     </form>
 </div>
 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; // If you're using a shared layout
+}
+
+<style>
+    .post-link, .post-link:visited, .post-link:active, .post-link:hover {
+        all: unset !important;
+        cursor: pointer !important;
+        display: block !important;
+    }
+</style>
 
 @foreach (Post post in ViewBag.Posts)
 {
-    <div class="post-container">
-      
-        <div class="user-info">
-            <img src="@(string.IsNullOrEmpty(post.User?.profilePicture) ? "/images/default-profile.png" : post.User.profilePicture)" 
-                alt="User Profile Picture" class="profile-pic" />
-            <p class="user-name">@post.User?.Name</p>
-        </div>
-
-    
-        <div class="post-content">
-            <p class="post-text">@post.PostText</p>
-
-            @if (!string.IsNullOrEmpty(post.PostImage))
-            {
-                <img src="@post.PostImage" alt="Post Image" class="post-image" />
-            }
-
-            <p class="post-meta-date">Posted on: @post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
-
-        </div>
-
-        <div class="reactions">
-            <div class="like-count">
-                <span>0</span> 
+    <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
+        <div class="post-container">
+            <div class="user-info">
+                <img src="@(string.IsNullOrEmpty(post.User?.profilePicture) ? "/images/default-profile.png" : post.User.profilePicture)" 
+                    alt="User Profile Picture" class="profile-pic" />
+                <p class="user-name">@post.User?.Name</p>
             </div>
-            <div class="comment-count">
-                <span>0</span> 
+
+            <div class="post-content">
+                <p class="post-text">@post.PostText</p>
+
+                @if (!string.IsNullOrEmpty(post.PostImage))
+                {
+                    <img src="@post.PostImage" alt="Post Image" class="post-image" />
+                }
+
+                <p class="post-meta-date">Posted on: @post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
+            </div>
+
+            <div class="reactions">
+                <div class="like-count">
+                    <span>👍 0</span> 
+                </div>
+                <div class="comment-count">
+                    <span>💬 0</span> 
+                </div>
             </div>
         </div>
-    </div>
+    </a>
 }
+
+
+

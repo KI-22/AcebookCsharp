@@ -111,4 +111,52 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
     // Default redirect to the Posts page if no ReturnUrl is provided
     return new RedirectResult("/posts");
 }
+   [Route("/posts/{postId}")]
+    [HttpGet]
+    public async Task<IActionResult> GetPost(int postId)
+    {
+        AcebookDbContext dbContext = new AcebookDbContext();  // Direct instantiation
+        int? currentUserId = HttpContext.Session.GetInt32("user_id");
+
+        // Check if the user is logged in (currentUserId is null)
+        if (currentUserId == null)
+        {
+            return RedirectToAction("Signin", "Sessions");
+        }
+
+        // Get the current user from the database using the userId
+        User? currentUser = dbContext.Users?.FirstOrDefault(u => u.Id == currentUserId.Value);
+        if (currentUser != null)
+        {
+            ViewBag.CurrentUser = currentUser;
+            ViewBag.ProfileUserName = currentUser.Name;
+        }
+
+        if (dbContext?.Posts == null)
+        {
+            return NotFound();
+        }
+
+        var post = await dbContext.Posts
+            // .Include(p => p.Comments)
+            .FirstOrDefaultAsync(p => p.Id == postId);
+
+
+        if (post == null)
+        {
+            TempData["ErrorMessage"] = "Post not found.";
+            return new RedirectResult("/posts");  // Redirect back if post not found
+        }
+        // List<Comments> postComments = await dbContext.Comments
+        //     .Where(c => c.PostId == post.Id)
+        //     .OrderByDescending(p => p.CreatedAt)
+        //     .ToListAsync();
+
+        // // Store the comments in ViewBag so the Profile page can access them
+        List<string> postComments = new List<string>{"Loved it", "Great post", "Nice one"};
+        ViewBag.PostsComments = postComments;
+        ViewBag.Post = post;
+        return View(post);
+        
+    }
 }

@@ -43,6 +43,17 @@
     </form>
 </div>
 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; // If you're using a shared layout
+}
+
+<style>
+    .post-link, .post-link:visited, .post-link:active, .post-link:hover {
+        all: unset !important;
+        cursor: pointer !important;
+        display: block !important;
+    }
+</style>
 
     <div class="posts-container-profile">
         <h2>@Model.Name's Posts</h2>
@@ -54,6 +65,7 @@
             <ul>
                 @foreach (var post in posts)
                 {
+                    <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
                     <li class="post-container-profile">
                         <div class="user-info-profile">
                             <img src="@Model.profilePicture" alt="Profile" class="profile-pic-profile" />
@@ -73,6 +85,7 @@
                             </div>
                         </div>
                     </li>
+                    </a>
                 }
             </ul>
         }

@@ -186,4 +186,10 @@
         left: 15px;
         line-height: 1;  
     }
+    .post-link, .post-link:visited, .post-link:active, .post-link:hover {
+        all: unset !important; /* Remove all default styles */
+        cursor: pointer !important; /* Ensure clickable */
+        display: block !important; /* Make entire content clickable */
+    }
+    
 }
