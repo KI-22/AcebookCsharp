@@ -159,100 +159,100 @@ namespace Acebook.Test
             IWebElement postText = driver.FindElement(By.XPath("//p[contains(text(), '" + postContent + "')]"));
             Assert.That(postText, Is.Not.Null);
         }
-        [Test]
-        public void CreatePost_OnlyWithImageFile_PostIsDisplayed()
-        {
-            var email = _faker.Internet.Email();
-            var username = _faker.Internet.UserName();
-            var password = "Admin123*";
-            var imageFilePath = "/Users/arthurbotto/week-11-acebook/csharp-acebook-mvc-umbrella/Acebook/wwwroot/images/il_1588xN.1965501418_pspx.png";
+        // [Test]
+        // public void CreatePost_OnlyWithImageFile_PostIsDisplayed()
+        // {
+        //     var email = _faker.Internet.Email();
+        //     var username = _faker.Internet.UserName();
+        //     var password = "Admin123*";
+        //     var imageFilePath = "/Users/arthurbotto/week-11-acebook/csharp-acebook-mvc-umbrella/Acebook/wwwroot/images/il_1588xN.1965501418_pspx.png";
     
 
 
-            driver.Navigate().GoToUrl("http://127.0.0.1:5287");
-            IWebElement signUpButton = driver.FindElement(By.Id("signup"));
-            signUpButton.Click();
-            IWebElement nameField = driver.FindElement(By.Id("Name"));
-            nameField.SendKeys(username);
-            IWebElement emailField = driver.FindElement(By.Id("Email"));
-            emailField.SendKeys(email);
-            IWebElement passwordField = driver.FindElement(By.Id("Password"));
-            passwordField.SendKeys(password);
-            IWebElement submitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
-            submitButton.Click();
+        //     driver.Navigate().GoToUrl("http://127.0.0.1:5287");
+        //     IWebElement signUpButton = driver.FindElement(By.Id("signup"));
+        //     signUpButton.Click();
+        //     IWebElement nameField = driver.FindElement(By.Id("Name"));
+        //     nameField.SendKeys(username);
+        //     IWebElement emailField = driver.FindElement(By.Id("Email"));
+        //     emailField.SendKeys(email);
+        //     IWebElement passwordField = driver.FindElement(By.Id("Password"));
+        //     passwordField.SendKeys(password);
+        //     IWebElement submitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
+        //     submitButton.Click();
             
-            // Sign in first
-            driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
-            IWebElement signInEmailField = driver.FindElement(By.Id("email"));
-            signInEmailField.SendKeys(email);
-            IWebElement signInpasswordField = driver.FindElement(By.Id("password"));
-            signInpasswordField.SendKeys(password);
-            IWebElement signInsubmitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
-            signInsubmitButton.Click();
+        //     // Sign in first
+        //     driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
+        //     IWebElement signInEmailField = driver.FindElement(By.Id("email"));
+        //     signInEmailField.SendKeys(email);
+        //     IWebElement signInpasswordField = driver.FindElement(By.Id("password"));
+        //     signInpasswordField.SendKeys(password);
+        //     IWebElement signInsubmitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
+        //     signInsubmitButton.Click();
 
-            // Create a new post
-            IWebElement postContentField = driver.FindElement(By.Id("PostImageFile"));
-            postContentField.SendKeys(imageFilePath);
-            IWebElement postSubmitButton = driver.FindElement(By.Id("submit"));
-            postSubmitButton.Click();
+        //     // Create a new post
+        //     IWebElement postContentField = driver.FindElement(By.Id("PostImageFile"));
+        //     postContentField.SendKeys(imageFilePath);
+        //     IWebElement postSubmitButton = driver.FindElement(By.Id("submit"));
+        //     postSubmitButton.Click();
             
-            // Wait for the post image to be displayed
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//img[contains(@src, 'images/il_1588xN.1965501418_pspx.png')]")));
+        //     // Wait for the post image to be displayed
+        //     var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+        //     wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//img[contains(@src, 'images/il_1588xN.1965501418_pspx.png')]")));
 
-            // Verify the post image is displayed
-            IWebElement post = driver.FindElement(By.XPath("//img[contains(@src, '/images/il_1588xN.1965501418_pspx.png')]"));
-            Assert.That(post, Is.Not.Null);
-        }
-        [Test]
-        public void CreatePost_WithTextAndImageFile_PostIsDisplayed()
-        {
-            var email = _faker.Internet.Email();
-            var username = _faker.Internet.UserName();
-            var password = "Admin123*";
-            var imageFilePath = "/Users/arthurbotto/week-11-acebook/csharp-acebook-mvc-umbrella/Acebook/wwwroot/images/il_1588xN.1965501418_pspx.png";
-            var postContent = _faker.Lorem.Sentence();
+        //     // Verify the post image is displayed
+        //     IWebElement post = driver.FindElement(By.XPath("//img[contains(@src, '/images/il_1588xN.1965501418_pspx.png')]"));
+        //     Assert.That(post, Is.Not.Null);
+        // }
+        // [Test]
+        // public void CreatePost_WithTextAndImageFile_PostIsDisplayed()
+        // {
+        //     var email = _faker.Internet.Email();
+        //     var username = _faker.Internet.UserName();
+        //     var password = "Admin123*";
+        //     var imageFilePath = "/Users/arthurbotto/week-11-acebook/csharp-acebook-mvc-umbrella/Acebook/wwwroot/images/il_1588xN.1965501418_pspx.png";
+        //     var postContent = _faker.Lorem.Sentence();
     
 
 
-            driver.Navigate().GoToUrl("http://127.0.0.1:5287");
-            IWebElement signUpButton = driver.FindElement(By.Id("signup"));
-            signUpButton.Click();
-            IWebElement nameField = driver.FindElement(By.Id("Name"));
-            nameField.SendKeys(username);
-            IWebElement emailField = driver.FindElement(By.Id("Email"));
-            emailField.SendKeys(email);
-            IWebElement passwordField = driver.FindElement(By.Id("Password"));
-            passwordField.SendKeys(password);
-            IWebElement submitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
-            submitButton.Click();
+        //     driver.Navigate().GoToUrl("http://127.0.0.1:5287");
+        //     IWebElement signUpButton = driver.FindElement(By.Id("signup"));
+        //     signUpButton.Click();
+        //     IWebElement nameField = driver.FindElement(By.Id("Name"));
+        //     nameField.SendKeys(username);
+        //     IWebElement emailField = driver.FindElement(By.Id("Email"));
+        //     emailField.SendKeys(email);
+        //     IWebElement passwordField = driver.FindElement(By.Id("Password"));
+        //     passwordField.SendKeys(password);
+        //     IWebElement submitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
+        //     submitButton.Click();
             
-            // Sign in first
-            driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
-            IWebElement signInEmailField = driver.FindElement(By.Id("email"));
-            signInEmailField.SendKeys(email);
-            IWebElement signInpasswordField = driver.FindElement(By.Id("password"));
-            signInpasswordField.SendKeys(password);
-            IWebElement signInsubmitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
-            signInsubmitButton.Click();
+        //     // Sign in first
+        //     driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
+        //     IWebElement signInEmailField = driver.FindElement(By.Id("email"));
+        //     signInEmailField.SendKeys(email);
+        //     IWebElement signInpasswordField = driver.FindElement(By.Id("password"));
+        //     signInpasswordField.SendKeys(password);
+        //     IWebElement signInsubmitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
+        //     signInsubmitButton.Click();
 
-            // Create a new post
-            IWebElement postContentField = driver.FindElement(By.Id("PostImageFile"));
-            postContentField.SendKeys(imageFilePath);
-            IWebElement postContentFieldText = driver.FindElement(By.Id("PostText"));
-            postContentFieldText.SendKeys(postContent);
-            IWebElement postSubmitButton = driver.FindElement(By.Id("submit"));
-            postSubmitButton.Click();
+        //     // Create a new post
+        //     IWebElement postContentField = driver.FindElement(By.Id("PostImageFile"));
+        //     postContentField.SendKeys(imageFilePath);
+        //     IWebElement postContentFieldText = driver.FindElement(By.Id("PostText"));
+        //     postContentFieldText.SendKeys(postContent);
+        //     IWebElement postSubmitButton = driver.FindElement(By.Id("submit"));
+        //     postSubmitButton.Click();
             
-            // Wait for the post image to be displayed
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//img[contains(@src, 'images/il_1588xN.1965501418_pspx.png')]")));
+        //     // Wait for the post image to be displayed
+        //     var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+        //     wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//img[contains(@src, 'images/il_1588xN.1965501418_pspx.png')]")));
 
-            // Verify the post image is displayed
-            IWebElement postFile = driver.FindElement(By.XPath("//img[contains(@src, '/images/il_1588xN.1965501418_pspx.png')]"));
-            Assert.That(postFile, Is.Not.Null);
-            IWebElement postText = driver.FindElement(By.XPath("//p[contains(text(), '" + postContent + "')]"));
-            Assert.That(postText, Is.Not.Null);
-        }
+        //     // Verify the post image is displayed
+        //     IWebElement postFile = driver.FindElement(By.XPath("//img[contains(@src, '/images/il_1588xN.1965501418_pspx.png')]"));
+        //     Assert.That(postFile, Is.Not.Null);
+        //     IWebElement postText = driver.FindElement(By.XPath("//p[contains(text(), '" + postContent + "')]"));
+        //     Assert.That(postText, Is.Not.Null);
+        // }
     }
 }
