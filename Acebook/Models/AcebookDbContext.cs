@@ -36,5 +36,8 @@ public class AcebookDbContext : DbContext
         modelBuilder.Entity<Post>()
           .Navigation(post => post.User)
           .AutoInclude();
+          modelBuilder.Entity<User>()
+          .HasIndex(u => u.Email)
+          .IsUnique();
     }
 }
