@@ -1,0 +1,81 @@
+@model acebook.Models.Post
+@using acebook.Models
+
+@{
+    var errorMessage = TempData["ErrorMessage"];
+}
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger text-center">
+        @errorMessage
+    </div>
+}
+
+<div class="profile-buttons">
+    @if (Context.Session.GetString("Username") == ViewBag.ProfileUserName)
+    {
+        <a href="@Url.Action("Profile", "Users", new { username = ViewBag.ProfileUserName })" class="btn btn-primary">Profile</a>
+    }
+    <form action="@Url.Action("Logout", "Sessions")" method="post" style="display:inline;">
+        <button type="submit" class="btn btn-secondary">Logout</button>
+    </form>
+</div>
+<div class="post-container">
+    <div class="user-info">
+        <img src="@(string.IsNullOrEmpty(ViewBag.Post.User?.profilePicture) ? "/images/default-profile.png" : ViewBag.Post.User.profilePicture)" 
+            alt="User Profile Picture" class="profile-pic" />
+        <p class="user-name">@ViewBag.Post.User?.Name</p>
+    </div>
+    <div class="post-content">
+        <p class="post-text">@ViewBag.Post.PostText</p>
+        @if (!string.IsNullOrEmpty(ViewBag.Post.PostImage))
+        {
+            <img src="@ViewBag.Post.PostImage" alt="Post Image" class="post-image" />
+        }
+        <p class="post-meta-date">Posted on: @ViewBag.Post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
+    </div>
+    <div class="reactions">
+        <div class="like-count">
+            <span>0</span> 
+        </div>
+        <div class="comment-count">
+            <span>0</span> 
+        </div>
+    </div>
+</div>
+<div class="posts-container-profile">
+        <h2>Comments</h2>
+        @{
+            var comments = ViewBag.PostsComments;
+        }
+        @if (comments != null)
+        {
+            <ul>
+                @foreach (var comment in comments)
+                {
+                    @* <a href="@Url.Action("GetComment", "Comments", new { commentId = comment.Id })" class="post-link"> *@
+                    <li class="post-container-profile">
+                        <div class="user-info-profile">
+                            <img src="@(string.IsNullOrEmpty(Model.User?.profilePicture) ? "/images/default-profile.png" : Model.User.profilePicture)" alt="Profile" class="profile-pic-profile" />
+                            <span class="user-name-profile">@Model.User?.Name</span>
+                        </div>
+                        <div class="post-content-profile">
+                            <p class="post-text-profile">@comment</p>
+                            @* <p class="post-meta-profile">Commented on: @comment.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p> *@
+                            <!-- Reactions Section -->
+                            <div class="reactions-profile">
+                                <span class="like-count-profile">0</span>
+                            </div>
+                        </div>
+                    </li>
+                    @* </a> *@
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No comments available.</p>
+        }
+    </div>
+</div>
