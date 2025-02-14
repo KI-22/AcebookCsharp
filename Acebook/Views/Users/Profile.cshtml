@@ -6,6 +6,9 @@
     {
         <a href="@Url.Action("Edit", new { username = Model.Name })" class="btn btn-primary">Edit Profile</a>
     }
+
+    <a href="@Url.Action("Index", "Friendships")" class="btn btn-primary">View Friendships</a>
+
     <form action="@Url.Action("Logout", "Sessions")" method="post" style="display:inline;">
         <button type="submit" class="btn btn-secondary">Logout</button>
     </form>
