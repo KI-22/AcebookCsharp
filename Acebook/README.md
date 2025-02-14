@@ -114,3 +114,14 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 
   The Logout button ends the session and redirects the user to the login page.
   The Account page is currently non-functional and needs further development.
+
+
+##### Pull request TestsFix
+
+- changed line 38 on post index.cshtml to this <button type="submit" id="submit" class="post-btn">Post</button>
+- added email constraint to dbContext
+- added unique email validation on user controller, added lines 36 to 38
+- fixed tests changing some tags to match new view templates and remove faker.net (everyone should do dotnet restore on their terminal)
+- in post.test line 168 and 213, i had to change the image path to my path
+- var imageFilePath = "/Users/arthurbotto/week-11-acebook/csharp-acebook-mvc-umbrella/Acebook/wwwroot/images/il_1588xN.1965501418_pspx.png";
+- not sure how it works for you guys.
