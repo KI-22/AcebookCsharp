@@ -30,6 +30,7 @@ public class SessionsController : Controller
             TempData["ErrorMessage"] = "Email and password are required.";
             return new RedirectResult("/signin");
         }
+      
         AcebookDbContext dbContext = new AcebookDbContext();
         User? user = dbContext.Users?.Where(user => user.Email == email).FirstOrDefault();
         if (user != null)

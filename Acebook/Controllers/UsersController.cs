@@ -32,6 +32,11 @@ public class UsersController : Controller
         {
             ModelState.AddModelError("Password", "Password is required.");
         }
+        // Check if email is already in use
+        if (dbContext.Users != null && dbContext.Users.Any(u => u.Email == user.Email))
+        {
+            ModelState.AddModelError("Email", "Email is already in use.");
+        }
 
         if (!ModelState.IsValid)
         {
@@ -76,10 +81,14 @@ public class UsersController : Controller
         {
             return NotFound();
         }
-        List<Post> userPosts = await dbContext.Posts
-            .Where(p => p.UserId == user.Id)
-            .OrderByDescending(p => p.CreatedAt)
-            .ToListAsync();
+        List<Post>? userPosts = null;
+        if (dbContext.Posts != null)
+        {
+            userPosts = await dbContext.Posts
+                .Where(p => p.UserId == user.Id)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+        }
 
         // Store the posts in ViewBag so the Profile page can access them
         ViewBag.CurrentUsersPosts = userPosts;
