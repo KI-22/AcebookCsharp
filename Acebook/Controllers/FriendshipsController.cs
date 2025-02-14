@@ -33,7 +33,7 @@ public class FriendshipsController : Controller
     }
 
 
-    [Route("/Friendships/RequestSent")]
+    [Route("/Friendships/SendFriendRequest")]
     [HttpPost]
     public async Task<IActionResult> SendFriendRequest(int receiverId)
     {
