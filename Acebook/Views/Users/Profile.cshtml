@@ -1,6 +1,21 @@
 @model acebook.Models.User
 @using acebook.Models
-
+@{
+    var errorMessage = TempData["ErrorMessage"];
+    var successMessage = TempData["SuccessMessage"];
+}
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger text-center">
+        @errorMessage
+    </div>
+}
+@if (successMessage != null)
+{
+    <div class="alert alert-success text-center">
+        @successMessage
+    </div>
+}
 <div class="profile-buttons">
     @if (Context.Session.GetString("Username") == Model.Name)
     {
@@ -30,7 +45,6 @@
 
 <div class="post-form-profile">
     <form action="/posts" method="post" enctype="multipart/form-data">
-        <!-- Hidden field to store the ReturnUrl -->
         <input type="hidden" name="ReturnUrl" value="@Context.Request.Path.Value" />
         
         <div class="input-container-profile">
@@ -49,44 +63,62 @@
 
 
     <div class="posts-container-profile">
-        <h2>@Model.Name's Posts</h2>
-        @{
-            var posts = ViewBag.CurrentUsersPosts as IEnumerable<Post>;
-        }
-        @if (posts != null && posts.Any())
-        {
-            <ul>
-                @foreach (var post in posts)
-                {
-                    <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
-                    <li class="post-container-profile">
-                        <div class="user-info-profile">
-                            <img src="@Model.profilePicture" alt="Profile" class="profile-pic-profile" />
-                            <span class="user-name-profile">@Model.Name</span>
-                        </div>
-                        <div class="post-content-profile">
+    <h2>@Model.Name's Posts</h2>
+    @{
+        var posts = ViewBag.CurrentUsersPosts as IEnumerable<Post>;
+    }
+    @if (posts != null && posts.Any())
+    {
+        <ul>
+            @foreach (var post in posts)
+            {
+                <li class="post-container-profile">
+                    <div class="user-info-profile">
+                        <img src="@Model.profilePicture" alt="Profile" class="profile-pic-profile" />
+                        <span class="user-name-profile">@Model.Name</span>
+                    </div>
+                    <div class="post-content-profile">
+                        <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
                             <p class="post-text-profile">@post.PostText</p>
                             @if (!string.IsNullOrEmpty(post.PostImage))
                             {
                                 <img src="@post.PostImage" alt="Post Image" class="post-image-profile" />
                             }
-                            <p class="post-meta-profile">Posted on: @post.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
-                            <div class="reactions-profile">
-                                <span class="like-count-profile">0</span>
-                                <span class="comment-count-profile">0</span>
-                            </div>
+                        </a>
+                        <p class="post-meta-profile">Posted on: @post.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
+                        <div>
+                            @{
+                                int likesCount = ViewBag.LikesCount ?? 0; // defaults to 0 otherwise
+                                string likeOrUnlike = ViewBag.LikeOrUnlike ?? "Like"; // defaults to "Like"
+                            }
+                            <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
+                                <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+                            </form>
                         </div>
-                    </li>
-                    </a>
-                }
-            </ul>
-        }
-        else
-        {
-            <p>No posts available.</p>
-        }
-    </div>
+                        <div class="reactions-profile">
+                            <div class="like-count">
+                                <span>👍@likesCount</span>
+                            </div>
+                            @if (Context.Session.GetInt32("user_id") == post.UserId)
+                            {
+                                <form asp-controller="Posts" asp-action="Delete" method="post" asp-route-id="@post.Id">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="ReturnUrl" value="@Context.Request.Path" />
+                                    <button type="submit" class="delete-button-profile">Delete Post</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No posts available.</p>
+    }
 </div>
+
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";

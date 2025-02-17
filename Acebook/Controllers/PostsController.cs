@@ -165,9 +165,10 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
         return View(post);
         
     }
-    [Route("/posts/{id}")]
-    [HttpDelete]
-    public IActionResult Delete(int id)
+    
+    [HttpPost]
+    [Route("/posts/{id}/delete")]
+    public IActionResult Delete(int id, string ReturnUrl)
     {
         AcebookDbContext dbContext = new AcebookDbContext();
         int? currentUserId = HttpContext.Session.GetInt32("user_id");
@@ -191,11 +192,17 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
             TempData["ErrorMessage"] = "You can only delete your own posts.";
             return new RedirectResult("/posts");  // Redirect if not the owner
         }
+        var likes = dbContext.Likes.Where(l => l.PostId == id);
+        dbContext.Likes.RemoveRange(likes);
 
         dbContext.Posts?.Remove(post);
         dbContext.SaveChanges();
 
         TempData["SuccessMessage"] = "Post deleted successfully.";
+        if (!string.IsNullOrEmpty(ReturnUrl))
+        {
+            return Redirect(ReturnUrl);  // Redirect to the original page
+        }
         return new RedirectResult("/posts");  // Redirect after deletion
     }
 }
