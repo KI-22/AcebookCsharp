@@ -19,7 +19,9 @@
             <button class="friend-request-button" type="submit">Accept</button>
         </form>
 
-        <button class="friend-request-button" type="button" onclick="location.href='@Url.Action("RejectRequest", "Friendships")'">Reject</button>
+        <form action="@Url.Action("RejectRequest", "Friendships")" method="post">
+            <button class="friend-request-button" type="submit">Reject</button>
+        </form>
     }
 
     <h2> Your Friends:</h2>
