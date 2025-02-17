@@ -1,3 +1,6 @@
+@model acebook.Models.Friendship
+@using acebook.Models
+
 @{
     ViewData["Title"] = "Friendship Page";
 }
@@ -7,9 +10,12 @@
 
     <a href="@Url.Action("SendFriendRequest", "Friendships")" class="btn btn-primary">Add a Friend</a>
 
-    @foreach (Friendship friendship in ViewBag.Friendship)
+    <h2>Requests:</h2>
+    @foreach (var friendship in ViewBag.CurrentUsersFriendships)
     {
-
+        <div> You have a request from: @friendship.User1Id </div>
     }
+
+    
 
 </div>

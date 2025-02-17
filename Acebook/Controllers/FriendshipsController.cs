@@ -22,6 +22,28 @@ public class FriendshipsController : Controller
     [HttpGet]
     public IActionResult Index()
     {
+        AcebookDbContext dbContext = new AcebookDbContext();  // Direct instantiation
+        int? currentUserId = HttpContext.Session.GetInt32("user_id");
+
+        if (currentUserId == null)
+        {
+            return RedirectToAction("Signin", "Sessions");
+        }
+
+        User? currentUser = dbContext.Users?.FirstOrDefault(u => u.Id == currentUserId.Value);
+        if (currentUser != null)
+        {
+            ViewBag.CurrentUser = currentUser;
+            //ViewBag.ProfileUserName = currentUser.Name;
+        }
+
+        List<Friendship> currentUsersFriendships = dbContext.Friendships?
+            //.Include(r => r.User1Id)  //('t => ((Derived)t).MyProperty') 
+            .Where(r => r.User2Id == currentUserId.Value)  // Filter by current user's ID
+            .Where(r => r.FriendshipStatus == "Pending")
+            //.OrderByDescending(r => r.User1Id)
+            .ToList() ?? new List<Friendship>();
+        ViewBag.CurrentUsersFriendships = currentUsersFriendships;
         return View();
     }
 
