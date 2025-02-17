@@ -52,6 +52,12 @@ public class PostsController : Controller
             .ToList() ?? new List<Post>();
         ViewBag.CurrentUsersPosts = currentUsersPosts;
 
+        // // Like vs Unlike button
+        ViewBag.LikeOrUnlike = "Like"; // temp value
+        
+        // // Get likes count (TBC)
+        ViewBag.LikesCount = 10; // temp value
+
         return View();
     }
 

@@ -72,8 +72,24 @@
                 {
                     <img src="@post.PostImage" alt="Post Image" class="post-image" />
                 }
+            <div><p class="post-meta-date">Posted on: @post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p></div>
 
-                <p class="post-meta-date">Posted on: @post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
+        <div>
+            @{
+                int likesCount = ViewBag.LikesCount ?? 0; // defaults to 0 otherwise
+            }
+            @{
+                string likeOrUnlike = ViewBag.LikeOrUnlike ?? "default"; // defaults to "default" otherwise
+            }
+            <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
+                <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+            </form>
+        </div>
+
+        <div class="reactions">
+            <div class="like-count">
+                <span>@likesCount likes</span>
+
             </div>
 
             <div class="reactions">
