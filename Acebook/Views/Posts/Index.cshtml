@@ -57,51 +57,44 @@
 
 @foreach (Post post in ViewBag.Posts)
 {
-    <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
-        <div class="post-container">
-            <div class="user-info">
-                <img src="@(string.IsNullOrEmpty(post.User?.profilePicture) ? "/images/default-profile.png" : post.User.profilePicture)" 
-                    alt="User Profile Picture" class="profile-pic" />
-                <p class="user-name">@post.User?.Name</p>
-            </div>
+    <div class="post-container">
+        <div class="user-info">
+            <img src="@(string.IsNullOrEmpty(post.User?.profilePicture) ? "/images/default-profile.png" : post.User.profilePicture)" 
+                alt="User Profile Picture" class="profile-pic" />
+            <p class="user-name">@post.User?.Name</p>
+        </div>
 
-            <div class="post-content">
+        <div class="post-content">
+            <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
                 <p class="post-text">@post.PostText</p>
-
                 @if (!string.IsNullOrEmpty(post.PostImage))
                 {
                     <img src="@post.PostImage" alt="Post Image" class="post-image" />
                 }
-            <div><p class="post-meta-date">Posted on: @post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p></div>
+            </a>
 
-        <div>
-            @{
-                int likesCount = ViewBag.LikesCount ?? 0; // defaults to 0 otherwise
-            }
-            @{
-                string likeOrUnlike = ViewBag.LikeOrUnlike ?? "default"; // defaults to "default" otherwise
-            }
-            <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
-                <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
-            </form>
-        </div>
+            <p class="post-meta-date">Posted on: @post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
 
-        <div class="reactions">
-            <div class="like-count">
-                <span>@likesCount likes</span>
-
+            <div>
+                @{
+                    int likesCount = ViewBag.LikesCount ?? 0; // defaults to 0 otherwise
+                    string likeOrUnlike = ViewBag.LikeOrUnlike ?? "Like"; // defaults to "Like"
+                }
+                <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
+                    <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+                </form>
             </div>
 
             <div class="reactions">
                 <div class="like-count">
-                    <span>0</span> 
+                    <span>@likesCount likes</span>
                 </div>
                 <div class="comment-count">
-                    <span>0</span> 
+                    <span>0 comments</span> 
                 </div>
             </div>
         </div>
-    </a>
+    </div>
 }
 
 
