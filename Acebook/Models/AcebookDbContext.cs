@@ -7,6 +7,7 @@ public class AcebookDbContext : DbContext
     public DbSet<Post>? Posts { get; set; }
     public DbSet<User>? Users { get; set; }
     public DbSet<Friendship>? Friendships { get; set; }
+    public DbSet<Likes>? Likes { get; set; }
 
     public string? DbPath { get; }
 
