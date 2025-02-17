@@ -21,6 +21,7 @@
     @if (Context.Session.GetString("Username") == ViewBag.ProfileUserName)
     {
         <a href="@Url.Action("Profile", "Users", new { username = ViewBag.ProfileUserName })" class="btn btn-primary">Profile</a>
+        <a href="@Url.Action("Index", "Friendships")" class="btn btn-primary">Friends</a>
     }
     <form action="@Url.Action("Logout", "Sessions")" method="post" style="display:inline;">
         <button type="submit" class="btn btn-secondary">Logout</button>
@@ -45,6 +46,7 @@
         </div>
     </form>
 </div>
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -59,9 +61,11 @@
 {
     <div class="post-container">
         <div class="user-info">
+            <a href="@Url.Action("Profile", "Users", new { username = post.User?.Name })" class="post-link">
             <img src="@(string.IsNullOrEmpty(post.User?.profilePicture) ? "/images/default-profile.png" : post.User.profilePicture)" 
                 alt="User Profile Picture" class="profile-pic" />
             <p class="user-name">@post.User?.Name</p>
+            </a>
         </div>
         <div class="post-content">
             <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">

@@ -20,9 +20,9 @@
     @if (Context.Session.GetString("Username") == Model.Name)
     {
         <a href="@Url.Action("Edit", new { username = Model.Name })" class="btn btn-primary">Edit Profile</a>
+        <a href="@Url.Action("Index", "Friendships")" class="btn btn-primary">Friends</a>
     }
 
-    <a href="@Url.Action("Index", "Friendships")" class="btn btn-primary">View Friendships</a>
 
     <form action="@Url.Action("Logout", "Sessions")" method="post" style="display:inline;">
         <button type="submit" class="btn btn-secondary">Logout</button>
@@ -40,26 +40,28 @@
             <p>No profile picture set.</p>
         }
         <h1 class="user-name-profile">@Model.Name</h1>
-        <a href="@Url.Action("Friends", new { username = Model.Name })" class="friends-link-profile">Friends</a>
+        <a href="@Url.Action("Index", "Friendships")" class="btn btn-primary">Friends</a>
     </div>
+@if (Context.Session.GetString("Username") == ViewBag.ProfileUserName)
+{
+    <div class="post-form-profile">
+        <form action="/posts" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="ReturnUrl" value="@Context.Request.Path.Value" />
+            
+            <div class="input-container-profile">
+                <input type="text" id="PostText" name="PostText" placeholder="What's on your mind?" class="post-input-profile" />
+            </div>
 
-<div class="post-form-profile">
-    <form action="/posts" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="ReturnUrl" value="@Context.Request.Path.Value" />
-        
-        <div class="input-container-profile">
-            <input type="text" id="PostText" name="PostText" placeholder="What's on your mind?" class="post-input-profile" />
-        </div>
-
-        <div class="image-upload-profile">
-            <label for="PostImageUrl"></label>
-            <input type="text" id="PostImageUrl" name="PostImageUrl" placeholder="Enter image URL" class="image-input-profile" />
-            <span>or</span>
-            <input type="file" id="PostImageFile" name="PostImageFile" class="file-input-profile" />
-            <button type="submit" id="submit" class="post-btn-profile">Post</button>
-        </div>
-    </form>
-</div>
+            <div class="image-upload-profile">
+                <label for="PostImageUrl"></label>
+                <input type="text" id="PostImageUrl" name="PostImageUrl" placeholder="Enter image URL" class="image-input-profile" />
+                <span>or</span>
+                <input type="file" id="PostImageFile" name="PostImageFile" class="file-input-profile" />
+                <button type="submit" id="submit" class="post-btn-profile">Post</button>
+            </div>
+        </form>
+    </div>
+}
 
 
     <div class="posts-container-profile">
@@ -74,8 +76,11 @@
             {
                 <li class="post-container-profile">
                     <div class="user-info-profile">
-                        <img src="@Model.profilePicture" alt="Profile" class="profile-pic-profile" />
-                        <span class="user-name-profile">@Model.Name</span>
+                        <a href="@Url.Action("Profile", "Users", new { username = post.User?.Name })" class="post-link">
+                        <img src="@(string.IsNullOrEmpty(post.User?.profilePicture) ? "/images/default-profile.png" : post.User.profilePicture)" 
+                            alt="User Profile Picture" class="profile-pic" />
+                        <p class="user-name">@post.User?.Name</p>
+                        </a>
                     </div>
                     <div class="post-content-profile">
                         <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
