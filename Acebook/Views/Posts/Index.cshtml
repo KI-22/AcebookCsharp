@@ -72,33 +72,33 @@
                 {
                     <img src="@post.PostImage" alt="Post Image" class="post-image" />
                 }
-            <div><p class="post-meta-date">Posted on: @post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p></div>
 
-        <div>
-            @{
-                int likesCount = ViewBag.LikesCount ?? 0; // defaults to 0 otherwise
-            }
-            @{
-                string likeOrUnlike = ViewBag.LikeOrUnlike ?? "default"; // defaults to "default" otherwise
-            }
-            <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
-                <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
-            </form>
-        </div>
+                <div><p class="post-meta-date">Posted on: @post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p></div>
 
-        <div class="reactions">
-            <div class="like-count">
-                <span>@likesCount likes</span>
-
-            </div>
-
-            <div class="reactions">
-                <div class="like-count">
-                    <span>0</span> 
+                <div>
+                    @{
+                        int likesCount = ViewBag.LikesCount ?? 0;
+                        string likeOrUnlike = ViewBag.LikeOrUnlike ?? "Like";
+                    }
+                    <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
+                        <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+                    </form>
                 </div>
-                <div class="comment-count">
-                    <span>0</span> 
+
+                <div class="reactions">
+                    <div class="like-count">
+                        <span>@likesCount likes</span>
+                    </div>
                 </div>
+
+                <!-- Delete Button: Only show if the logged-in user owns the post -->
+                @if (Context.Session.GetInt32("user_id") == post.UserId)
+                {
+                    <form action="@Url.Action("DeletePost", "Posts")" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@post.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                }
             </div>
         </div>
     </a>

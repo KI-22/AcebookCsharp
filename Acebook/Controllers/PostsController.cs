@@ -117,7 +117,7 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
     // Default redirect to the Posts page if no ReturnUrl is provided
     return new RedirectResult("/posts");
 }
-   [Route("/posts/{postId}")]
+    [Route("/posts/{postId}")]
     [HttpGet]
     public async Task<IActionResult> GetPost(int postId)
     {
@@ -164,5 +164,38 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
         ViewBag.Post = post;
         return View(post);
         
+    }
+    [Route("/posts/{id}")]
+    [HttpDelete]
+    public IActionResult Delete(int id)
+    {
+        AcebookDbContext dbContext = new AcebookDbContext();
+        int? currentUserId = HttpContext.Session.GetInt32("user_id");
+
+        if (currentUserId == null)
+        {
+            TempData["ErrorMessage"] = "You must be logged in to delete a post.";
+            return new RedirectResult("/signin");  // Redirect to sign-in
+        }
+
+        var post = dbContext.Posts?.FirstOrDefault(p => p.Id == id);
+
+        if (post == null)
+        {
+            TempData["ErrorMessage"] = "Post not found.";
+            return new RedirectResult("/posts");  // Redirect if post doesn't exist
+        }
+
+        if (post.UserId != currentUserId.Value)
+        {
+            TempData["ErrorMessage"] = "You can only delete your own posts.";
+            return new RedirectResult("/posts");  // Redirect if not the owner
+        }
+
+        dbContext.Posts?.Remove(post);
+        dbContext.SaveChanges();
+
+        TempData["SuccessMessage"] = "Post deleted successfully.";
+        return new RedirectResult("/posts");  // Redirect after deletion
     }
 }
