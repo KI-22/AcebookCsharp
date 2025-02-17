@@ -31,8 +31,6 @@ namespace Acebook.Test
         {
             driver.Quit();
         }
-
-
         [Test]
         public void CreatePost_OnlyWithText_PostIsDisplayed()
         {
@@ -40,7 +38,6 @@ namespace Acebook.Test
             var username = _faker.Internet.UserName();
             var password = "Admin123*";
             var postContent = _faker.Lorem.Sentence();
-
 
             driver.Navigate().GoToUrl("http://127.0.0.1:5287");
             IWebElement signUpButton = driver.FindElement(By.Id("signup"));
@@ -53,7 +50,7 @@ namespace Acebook.Test
             passwordField.SendKeys(password);
             IWebElement submitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
             submitButton.Click();
-            
+
             // Sign in first
             driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
             IWebElement signInEmailField = driver.FindElement(By.Id("email"));
@@ -64,9 +61,9 @@ namespace Acebook.Test
             signInsubmitButton.Click();
 
             // Create a new post
-            IWebElement postContentField = driver.FindElement(By.Id("PostText"));
-            postContentField.SendKeys(postContent);
-            IWebElement postSubmitButton = driver.FindElement(By.Id("submit"));
+            IWebElement postContentFieldText = driver.FindElement(By.CssSelector(".post-input"));
+            postContentFieldText.SendKeys(postContent);
+            IWebElement postSubmitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
             postSubmitButton.Click();
 
             // Verify the post is displayed
@@ -82,7 +79,6 @@ namespace Acebook.Test
             var password = "Admin123*";
             var imageUrl = _faker.Image.PicsumUrl();
 
-
             driver.Navigate().GoToUrl("http://127.0.0.1:5287");
             IWebElement signUpButton = driver.FindElement(By.Id("signup"));
             signUpButton.Click();
@@ -94,7 +90,7 @@ namespace Acebook.Test
             passwordField.SendKeys(password);
             IWebElement submitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
             submitButton.Click();
-            
+
             // Sign in first
             driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
             IWebElement signInEmailField = driver.FindElement(By.Id("email"));
@@ -104,9 +100,9 @@ namespace Acebook.Test
             IWebElement signInsubmitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
             signInsubmitButton.Click();
             // Create a new post
-            IWebElement postContentField = driver.FindElement(By.Id("PostImageUrl"));
-            postContentField.SendKeys(imageUrl);
-            IWebElement postSubmitButton = driver.FindElement(By.Id("submit"));
+            IWebElement postContentFieldUrl = driver.FindElement(By.CssSelector(".image-input"));
+            postContentFieldUrl.SendKeys(imageUrl);
+            IWebElement postSubmitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
             postSubmitButton.Click();
 
             // Verify the post image is displayed
@@ -114,6 +110,7 @@ namespace Acebook.Test
             Assert.That(post, Is.Not.Null);
             
         }
+
         [Test]
         public void CreatePost_WithTextAndImageUrl_PostIsDisplayed()
         {
@@ -123,7 +120,6 @@ namespace Acebook.Test
             var imageUrl = _faker.Image.PicsumUrl();
             var postContent = _faker.Lorem.Sentence();
 
-
             driver.Navigate().GoToUrl("http://127.0.0.1:5287");
             IWebElement signUpButton = driver.FindElement(By.Id("signup"));
             signUpButton.Click();
@@ -135,7 +131,7 @@ namespace Acebook.Test
             passwordField.SendKeys(password);
             IWebElement submitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
             submitButton.Click();
-            
+
             // Sign in first
             driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
             IWebElement signInEmailField = driver.FindElement(By.Id("email"));
@@ -146,11 +142,11 @@ namespace Acebook.Test
             signInsubmitButton.Click();
 
             // Create a new post
-            IWebElement postContentFieldText = driver.FindElement(By.Id("PostText"));
+            IWebElement postContentFieldText = driver.FindElement(By.CssSelector(".post-input"));
             postContentFieldText.SendKeys(postContent);
-            IWebElement postContentFieldUrl = driver.FindElement(By.Id("PostImageUrl"));
+            IWebElement postContentFieldUrl = driver.FindElement(By.CssSelector(".image-input"));
             postContentFieldUrl.SendKeys(imageUrl);
-            IWebElement postSubmitButton = driver.FindElement(By.Id("submit"));
+            IWebElement postSubmitButton = driver.FindElement(By.CssSelector("input[type='submit']"));
             postSubmitButton.Click();
 
             // Verify the post image is displayed

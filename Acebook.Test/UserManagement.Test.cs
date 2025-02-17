@@ -2,6 +2,7 @@ using NUnit.Framework;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 using Bogus;
+// using Faker; // Removed as it is not needed
 using OpenQA.Selenium.Support.UI;
 
 namespace Acebook.Tests
@@ -9,13 +10,13 @@ namespace Acebook.Tests
   public class UserManagement
   {
     ChromeDriver driver;
-    Faker faker;
+    Bogus.Faker faker;
 
     [SetUp]
     public void Setup()
     {
       driver = new ChromeDriver();
-      faker = new Faker();
+      faker = new Bogus.Faker();
     }
 
     [TearDown]
