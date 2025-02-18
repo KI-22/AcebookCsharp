@@ -59,7 +59,7 @@
         <p>About me</p>
         <p class="user-bio-profile">@Model.Bio</p>
         <p>Member since: @Model.JoinedDate.ToString("MMMM dd, yyyy")</p>
-        <a href="@Url.Action("Friends", new { username = Model.Name })" class="friends-link-profile">Friends</a>
+        <a href="@Url.Action("Index", "Friendships")" class="friends-link-profile">Friends</a>
     </div>
 @if (Context.Session.GetString("Username") == Model.Name)
 {
