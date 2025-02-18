@@ -7,7 +7,7 @@ public class User
 {
   [Key]
   public int Id {get; set;}
-  [Required]
+  [Required(ErrorMessage = "Username is required.")]
   [StringLength(50)]
   public string? Name {get; set;}
 
@@ -16,10 +16,10 @@ public class User
         ErrorMessage = "Bio can only contain letters, numbers, spaces, and common punctuation.")]
     public string? Bio { get; set; }
 
-  [Required]
-  [StringLength(100, MinimumLength = 2, ErrorMessage = "Full name must be between 2 and 100 characters.")]
+  [Required(ErrorMessage = " Please enter your name.")]
+  [StringLength(100, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 100 characters.")]
   [RegularExpression(@"^[a-zA-ZÀ-ÿ' -]+$", 
-        ErrorMessage = "Full name can only contain letters, spaces, hyphens, and apostrophes.")]
+        ErrorMessage = "Name can only contain letters, spaces, hyphens, and apostrophes.")]
     public string? FullName { get; set; }
 
   public DateTime JoinedDate { get; set; } = DateTime.UtcNow;
