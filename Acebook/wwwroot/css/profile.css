@@ -1,17 +1,17 @@
-/* Profile Container - Kept It Narrower */
+/* 🔹 Profile Container - Narrower Layout */
 .profile-container-profile {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 40px auto;
-    max-width: 700px; /* Narrow width */
+    max-width: 700px;
     background: #fff;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Friends Link */
+/* 🔹 Friends Link */
 .friends-link-profile {
     display: block;
     margin-top: 10px;
@@ -24,7 +24,7 @@
     text-decoration: underline;
 }
 
-/* 🔥 FIX: Restored Navbar Profile Buttons */
+/* 🔹 Profile Buttons (Navbar) */
 .profile-buttons {
     position: absolute;
     top: 10px;
@@ -34,19 +34,20 @@
 }
 
 .profile-buttons .btn {
-    background: rgba(180, 85, 255, 0.8);
-    padding: 8px 16px;
-    font-size: 14px;
+    background: rgba(180, 85, 255, 0.6);
+    padding: 6px 12px;
+    font-size: 12px;
     border-radius: 5px;
     color: white;
     text-decoration: none;
+    border: none;
 }
 
 .profile-buttons .btn:hover {
     background: rgba(180, 85, 255, 1);
 }
 
-/* 🔹 Post Form - Centered & Improved */
+/* 🔹 Post Form - Centered */
 .post-form-profile {
     display: flex;
     flex-direction: column;
@@ -59,16 +60,7 @@
     margin-top: 20px;
 }
 
-/* Profile Picture in Post Form */
-.post-form-profile .profile-pic-profile {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
-
-/* Input Box - Larger & Centered */
+/* 🔹 Input Box */
 .input-container-profile {
     display: flex;
     flex-direction: column;
@@ -78,15 +70,15 @@
 
 .post-input-profile {
     width: 100%;
-    height: 100px;
-    padding: 15px;
-    border-radius: 20px;
+    height: 80px;
+    padding: 10px;
+    border-radius: 15px;
     border: 1px solid #ccc;
-    font-size: 16px;
+    font-size: 14px;
     resize: none;
 }
 
-/* Image Upload Section */
+/* 🔹 Image Upload Section */
 .image-upload-profile {
     display: flex;
     align-items: center;
@@ -94,21 +86,23 @@
     margin-top: 10px;
 }
 
-.image-input-profile, .file-input-profile {
+.image-input-profile, 
+.file-input-profile {
     width: 120px;
     padding: 5px;
     font-size: 12px;
 }
 
-/* Post Button */
+/* 🔹 Post Button */
 .post-btn-profile {
-    background: rgba(180, 85, 255, 0.8);
+    background: rgba(180, 85, 255, 0.6);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
+    padding: 8px 16px;
+    border-radius: 15px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 12px;
     margin-top: 10px;
 }
 
@@ -120,11 +114,14 @@
 .posts-container-profile {
     width: 100%;
     margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .posts-container-profile h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 22px;
+    margin-bottom: 15px;
     font-weight: bold;
     color: #333;
 }
@@ -132,20 +129,29 @@
 .posts-container-profile ul {
     list-style: none;
     padding: 0;
-}
-
-/* 🔹 Post Card */
-.post-container-profile {
-    background: #f9f9f9;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 10px;
+    width: 100%;
+    margin-top: 40px;
     display: flex;
-    align-items: flex-start;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    align-items: center;
 }
 
-/* User Info in Post */
+/* 🔹 Post Container - Bigger & Balanced */
+.post-container-profile {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    background: #f9f9f9;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    width: 80%; /* Increased width for better proportion */
+    max-width: 900px; /* Limits excessive stretching on large screens */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* 🔹 User Info - Left Side */
 .user-info-profile {
     display: flex;
     flex-direction: column;
@@ -160,7 +166,7 @@
     height: 70px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .user-name-profile {
@@ -169,17 +175,37 @@
     font-size: 18px;
 }
 
-/* Post Content */
+/* 🔹 Delete Post Button - Now Under User Info */
+.delete-button-profile {
+    background: rgba(255, 99, 71, 0.2);
+    color: #ff6347;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+    margin-top: 10px;
+}
+
+.delete-button-profile:hover {
+    background: rgba(255, 99, 71, 0.4);
+    color: #d63b2f;
+}
+
+/* 🔹 Post Content */
 .post-content-profile {
     width: 80%;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .post-text-profile {
     font-size: 16px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: #444;
+    line-height: 1.5;
 }
 
 .post-image-profile {
@@ -190,20 +216,23 @@
     margin-top: 10px;
 }
 
+/* 🔹 Post Meta */
 .post-meta-profile {
-    font-size: 12px;
+    font-size: 14px;
     color: #888;
     margin-top: 5px;
 }
 
-/* 🔹 Reactions */
+/* 🔹 Reactions - Bottom Right */
 .reactions-profile {
-    margin-top: 10px;
     display: flex;
-    gap: 15px;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
 }
 
-.like-count-profile, .comment-count-profile {
+.like-count-profile, 
+.comment-count-profile {
     font-size: 14px;
     color: #555;
     display: flex;
@@ -219,42 +248,16 @@
     content: "💬";
 }
 
-/* 🔥 Fix: Ensure Navbar Buttons Are Unaffected */
-nav .profile-buttons {
-    position: static !important;
-    display: flex;
-    gap: 10px;
-}
-
-/* 📱 Responsive Design */
+/* 🔹 Responsive Design */
 @media (max-width: 768px) {
     .profile-container-profile {
         max-width: 90%;
         padding: 15px;
     }
 
-    .post-form-profile {
-        flex-direction: column;
-        width: 100%;
-        align-items: center;
-    }
-
-    .post-input-profile {
-        width: 100%;
-    }
-
-    .image-upload-profile {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .post-btn-profile {
-        width: 100%;
-        margin-top: 5px;
-    }
-
     .post-container-profile {
         flex-direction: column;
+        width: 95%;
     }
 
     .user-info-profile {
@@ -266,5 +269,15 @@ nav .profile-buttons {
 
     .post-content-profile {
         width: 100%;
+    }
+
+    .delete-button-profile {
+        width: 100%;
+        text-align: center;
+    }
+
+    .reactions-profile {
+        display: flex;
+        justify-content: space-between;
     }
 }

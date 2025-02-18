@@ -95,19 +95,24 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 ```shell
 ; dotnet ef database update CreatePostsAndUsers
 ```
-#### Changed the order of the localhost connections in Acebook/Properties/launchSettings.json    
+### Changed the order of the localhost connections in Acebook/Properties/launchSettings.json    
 
   from "applicationUrl": "https://localhost:7196;http://localhost:5287" to "applicationUrl": "http://localhost:5287;https://localhost:7196"
 
-#### Nullable warnings were resolved
+### Nullable warnings were resolved
   csharp-acebook-mvc-template/Acebook/Controllers/UsersController.cs(27,7)
   csharp-acebook-mvc-template/Acebook/Controllers/PostsController.cs(33,7)
   csharp-acebook-mvc-template/Acebook/Controllers/SessionsController.cs(27,20)
 
-#### Some Changes in Tests to stop warnings (Assert is updated)
+### Some Changes in Tests to stop warnings (Assert is updated)
   csharp-acebook-mvc-template/Acebook.Test/LandingPageTests.cs(25,5):constraint model, Assert.That(actual, Is.EqualTo(expected)), was used instead of the classic model, Assert.AreEqual(expected, actual)
 
   csharp-acebook-mvc-template/Acebook.Test/UserManagement.Test.cs(37,7): constraint model, Assert.That(actual, Is.EqualTo(expected)), was used instead of the classic model, Assert.AreEqual(expected, actual)
 
   csharp-acebook-mvc-template/Acebook.Test/UserManagement.Test.cs(62,7):constraint model, Assert.That(actual, Is.EqualTo(expected)), was used instead of the classic model, Assert.AreEqual(expected, actual)
+
+## Pull Request10 RemovePosts
+  Added a delete action to the PostsController.
+  Updated the Profile and Posts/Index views to display the "Delete Post" button.
+  Improved styling for the Profile and Posts/Index pages.
 

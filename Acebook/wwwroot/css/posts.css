@@ -71,8 +71,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    width: 100%; /* Ensure it stretches fully */
-    max-width: 800px; /* Increase max width */
+    width: 100%;
+    max-width: 800px;
 }
 
 .post-input {
@@ -83,9 +83,9 @@
     border: 1px solid #ccc;
     font-size: 16px;
     resize: none;
-    width: 100%; /* Ensures it takes full width */
-    max-width: 100%; /* Overrides any limiting width */
-    min-width: 500px; /* Sets a larger minimum width */
+    width: 100%;
+    max-width: 100%;
+    min-width: 500px;
 }
 
 /* 📸 Image Upload */
@@ -132,7 +132,7 @@
     position: relative;
 }
 
-/* 👤 User Info (Left Side of Post) */
+/* 👤 User Info */
 .user-info {
     display: flex;
     flex-direction: column;
@@ -156,7 +156,7 @@
     text-align: center;
 }
 
-/* 📝 Post Content (Right Side of Post) */
+/* 📝 Post Content */
 .post-content {
     flex-grow: 1;
     max-width: 100%;
@@ -177,36 +177,51 @@
     border-radius: 5px;
 }
 
-/* 🕒 Post Metadata (Date & Time) */
+/* 🕒 Post Metadata */
 .post-meta-date {
     font-size: 12px;
     color: gray;
     margin-top: 5px;
 }
 
-/* 👍 Reactions */
+/* 👍 Like Section */
+.like-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* 🟣 Like Button */
+.like-btn {
+    background: rgba(180, 85, 255, 0.8);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.like-btn:hover {
+    background: rgba(180, 85, 255, 1);
+}
+
+/* 👍 Like Count */
+.like-count {
+    font-size: 14px;
+    color: #555;
+    font-weight: bold;
+}
+
+/* 📝 Reactions */
 .reactions {
     position: absolute;
     bottom: 10px;
-    right: 16px;
+    left: 16px;
     display: flex;
     gap: 15px;
-}
-
-.like-count, .comment-count {
-    font-size: 14px;
-    color: #555;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.like-count::before {
-    content: "👍";
-}
-
-.comment-count::before {
-    content: "💬";
 }
 
 /* 🎛️ Fix: Navbar Buttons */
@@ -214,6 +229,26 @@ nav .profile-buttons {
     position: static !important;
     display: flex;
     gap: 10px;
+}
+
+/* ❌ Delete Button */
+.delete-button-post {
+    position: absolute;
+    bottom: 10px;
+    right: 16px;
+    background: rgba(255, 99, 71, 0.2) !important;
+    color: #ff6347 !important;
+    border: none !important;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.delete-button-post:hover {
+    background: rgba(255, 99, 71, 0.4) !important;
+    color: #d63b2f !important;
 }
 
 /* 📱 Mobile Styles */
@@ -261,7 +296,7 @@ nav .profile-buttons {
     }
 
     .post-meta-date {
-        font-size: 10px;  
+        font-size: 10px;
         color: gray;
         margin-top: 5px;
         position: absolute;
