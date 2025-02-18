@@ -40,6 +40,7 @@ public class FriendshipsController : Controller
         List<Friendship> currentUsersFriendships = dbContext.Friendships? 
             .Where(r => r.User2Id == currentUserId.Value)
             .Where(r => r.FriendshipStatus == "Pending")
+            .Include(f => f.User1)
             //.OrderByDescending(r => r.User1Id)
             .ToList() ?? new List<Friendship>();
         ViewBag.CurrentUsersFriendships = currentUsersFriendships;
@@ -47,6 +48,7 @@ public class FriendshipsController : Controller
         List<Friendship> currentUsersAcceptedFriendships = dbContext.Friendships? 
             .Where(r => r.User2Id == currentUserId.Value)
             .Where(r => r.FriendshipStatus == "Accepted")
+            .Include(f => f.User1)
             .ToList() ?? new List<Friendship>();
         ViewBag.CurrentUsersAcceptedFriendships = currentUsersAcceptedFriendships;
         return View();
@@ -62,9 +64,16 @@ public class FriendshipsController : Controller
 
     [Route("/Friendships/SendFriendRequest")]
     [HttpPost]
-    public async Task<IActionResult> SendFriendRequest(int receiverId)
+    public async Task<IActionResult> SendFriendRequest(string receiverUsername)
     {
         AcebookDbContext dbContext = new AcebookDbContext();
+        var receiver = dbContext.Users.FirstOrDefault(u => u.Name == receiverUsername);
+
+        if (receiver == null)
+        {
+            ModelState.AddModelError("receiverUsername", "User not found.");
+            return View(); // Or return to the form with an error message
+        }
 
         int? CurrentUserId = HttpContext.Session.GetInt32("user_id");
 
@@ -76,23 +85,23 @@ public class FriendshipsController : Controller
 
         int senderId = CurrentUserId.Value;
 
-        var existingRequest = await dbContext.Friendships.FirstOrDefaultAsync(f => f.User1Id == senderId && f.User2Id == receiverId);
+        var existingRequest = await dbContext.Friendships.FirstOrDefaultAsync(f => f.User1Id == senderId && f.User2Id == receiver.Id);
         if (existingRequest != null)
         {
             TempData["ErrorMessage"] = "Friend request already sent.";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Friendships");
         }
         var friendship = new Friendship
         {
             User1Id = senderId,
-            User2Id = receiverId,
+            User2Id = receiver.Id,
             FriendshipStatus = "Pending"
         };
 
         dbContext.Friendships.Add(friendship);
         await dbContext.SaveChangesAsync();
         TempData["SuccessMessage"] = "Friend request sent!";
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Friendships");
     }
 
 
