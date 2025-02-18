@@ -37,6 +37,10 @@ public class UsersController : Controller
         {
             ModelState.AddModelError("Email", "Email is already in use.");
         }
+        if (string.IsNullOrWhiteSpace(user.FullName))
+        {
+            ModelState.AddModelError("FullName", "Full name is required.");
+        }
 
         if (!ModelState.IsValid)
         {
@@ -49,6 +53,10 @@ public class UsersController : Controller
         {
             user.Password = passwordHasher.HashPassword(user, user.Password);
         }
+
+        user.JoinedDate = DateTime.UtcNow;
+        user.Bio = "";
+        user.IsPrivate = false;
 
         dbContext.Users?.Add(user);
         dbContext.SaveChanges();
@@ -165,6 +173,22 @@ public class UsersController : Controller
         {
             return View(userToUpdate);
         }
+
+        if (!string.IsNullOrWhiteSpace(user.FullName))
+        {
+            userToUpdate.FullName = user.FullName;
+        }
+
+        if (!string.IsNullOrWhiteSpace(user.Bio))
+        {
+            userToUpdate.Bio = user.Bio;
+        }
+
+        //  Allow users to toggle Privacy setting
+        userToUpdate.IsPrivate = user.IsPrivate;
+
+        // Ensure `JoinedDate` is NOT changed
+        userToUpdate.JoinedDate = userToUpdate.JoinedDate;
 
         // Update fields if changed
         if (!string.IsNullOrWhiteSpace(user.Name))
