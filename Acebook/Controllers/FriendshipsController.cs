@@ -64,55 +64,38 @@ public class FriendshipsController : Controller
 
     [Route("/Friendships/SendFriendRequest")]
     [HttpPost]
-    public async Task<IActionResult> SendFriendRequest(string receiverUsername)
+    public async Task<IActionResult> SendFriendRequest(int receiverId)
     {
         AcebookDbContext dbContext = new AcebookDbContext();
-        var receiver = dbContext.Users.FirstOrDefault(u => u.Name == receiverUsername);
-
-        if (receiver == null)
-        {
-            ModelState.AddModelError("receiverUsername", "User not found.");
-            return View(); // Or return to the form with an error message
-        }
 
         int? CurrentUserId = HttpContext.Session.GetInt32("user_id");
 
         // Check if the user is logged in (currentUserId is null)
         if (CurrentUserId == null)
         {
-            return RedirectToAction("Signin", "Sessions");
+            return Json(new { success = false, message = "Please sign in to send a friend request." });
         }
 
         int senderId = CurrentUserId.Value;
 
-        var existingRequest = await dbContext.Friendships.FirstOrDefaultAsync(f => f.User1Id == senderId && f.User2Id == receiver.Id);
+        var existingRequest = await dbContext.Friendships.FirstOrDefaultAsync(f => f.User1Id == senderId && f.User2Id == receiverId);
         if (existingRequest != null)
         {
-            TempData["ErrorMessage"] = "Friend request already sent.";
-            return RedirectToAction("Index", "Friendships");
+             return Json(new { success = false, message = "Friend request already sent." });
         }
+
         var friendship = new Friendship
         {
             User1Id = senderId,
-            User2Id = receiver.Id,
+            User2Id = receiverId,
             FriendshipStatus = "Pending"
         };
 
         dbContext.Friendships.Add(friendship);
         await dbContext.SaveChangesAsync();
-        TempData["SuccessMessage"] = "Friend request sent!";
-        return RedirectToAction("Index", "Friendships");
+        
+        return Json(new { success = true, message = "Friend request sent!" });
     }
-
-
-
-    // [Route("/Friendships/AcceptRequest")]
-    // [HttpGet]
-    // public IActionResult AcceptingRequest()
-    // {
-    //     return RedirectToAction("Index", "Friendships");
-    // }
-
 
 
     [Route("/Friendships/AcceptRequest")]
@@ -161,5 +144,34 @@ public class FriendshipsController : Controller
         dbContext.Friendships.Update(FriendshipToUpdate);
         await dbContext.SaveChangesAsync();
         return RedirectToAction("Index", "Friendships");
+    }
+
+     [Route("/Friendships/CancelFriendRequest")]
+    [HttpPost]
+    public async Task<IActionResult> CancelFriendRequest(int receiverId)
+    {
+        using (AcebookDbContext dbContext = new AcebookDbContext())
+        {
+            int? currentUserId = HttpContext.Session.GetInt32("user_id");
+
+            if (currentUserId == null)
+            {
+                return Json(new { success = false, message = "Please sign in to cancel a friend request." });
+            }
+
+            var friendRequest = await dbContext.Friendships
+                .FirstOrDefaultAsync(f => f.User1Id == currentUserId.Value && f.User2Id == receiverId && f.FriendshipStatus == "Pending");
+
+            if (friendRequest == null)
+            {
+                return Json(new { success = false, message = "No pending request to cancel." });
+            }
+            
+            dbContext.Friendships.Remove(friendRequest);
+            await dbContext.SaveChangesAsync();
+              
+            return Json(new { success = true, message = "Friend request canceled." });
+        
+        }
     }
 }

@@ -90,8 +90,18 @@ public class UsersController : Controller
                 .ToListAsync();
         }
 
-        // Store the posts in ViewBag so the Profile page can access them
+        // Check if a friend request is pending
+        var currentUserId = HttpContext.Session.GetInt32("user_id");
+        bool isFriendRequestPending = false;
+        if (currentUserId.HasValue)
+        {
+            isFriendRequestPending = await dbContext.Friendships
+                .AnyAsync(f => f.User1Id == currentUserId.Value && f.User2Id == user.Id && f.FriendshipStatus == "Pending");
+        }
+
+        // Store the posts and friendship status in ViewBag so the Profile page can access them
         ViewBag.CurrentUsersPosts = userPosts;
+        ViewBag.IsFriendRequestPending = isFriendRequestPending;
 
         return View(user);
         }

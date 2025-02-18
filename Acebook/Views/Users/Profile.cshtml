@@ -1,32 +1,48 @@
 @model acebook.Models.User
 @using acebook.Models
 @{
-    var errorMessage = TempData["ErrorMessage"];
     var successMessage = TempData["SuccessMessage"];
+    var errorMessage = TempData["ErrorMessage"];
+    var currentUserId = Context.Session.GetInt32("user_id");
+    var isFriendRequestPending = ViewBag.IsFriendRequestPending ?? false;
 }
-@if (errorMessage != null)
-{
-    <div class="alert alert-danger text-center">
-        @errorMessage
-    </div>
-}
+
 @if (successMessage != null)
 {
     <div class="alert alert-success text-center">
         @successMessage
     </div>
 }
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger text-center">
+        @errorMessage
+    </div>
+}
 <div class="profile-buttons">
+    @if (Context.Session.GetString("Username") != null && Context.Session.GetString("Username") != Model.Name)
+    {
+    <form id="friendRequestForm"
+            action="@Url.Action(isFriendRequestPending ? "CancelFriendRequest" : "SendFriendRequest", "Friendships", new { receiverId = Model.Id })"
+            method="post" style="display:inline;">
+            <button type="submit" id="friendRequestButton" class="btn @(isFriendRequestPending ? "btn-danger" : "btn-primary")">
+                @(isFriendRequestPending ? "Cancel Request" : "Add Friend")
+            </button>
+        </form>
+    }
     @if (Context.Session.GetString("Username") == Model.Name)
     {
         <a href="@Url.Action("Edit", new { username = Model.Name })" class="btn btn-primary">Edit Profile</a>
-        <a href="@Url.Action("Index", "Friendships")" class="btn btn-primary">Friends</a>
     }
 
+    <a href="@Url.Action("Index", "Friendships")" class="btn btn-primary">View Friendships</a>
 
     <form action="@Url.Action("Logout", "Sessions")" method="post" style="display:inline;">
         <button type="submit" class="btn btn-secondary">Logout</button>
     </form>
+
+    
 </div>
 
 <div class="profile-container-profile">
@@ -136,3 +152,56 @@
         display: block !important;
     }
 </style>
+
+
+<script>
+    document.getElementById("friendRequestForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var form = event.target;
+        var button = document.getElementById("friendRequestButton");
+        var isCanceling = button.innerText.trim() === "Cancel Request";
+
+        fetch(form.action, {
+            method: form.method,
+            body: new FormData(form)
+        }).then(response => response.text())
+          .then(data => {
+              if (isCanceling) {
+                  button.innerText = "Add Friend";
+                  button.classList.remove("btn-danger");
+                  button.classList.add("btn-primary");
+
+                  // Show cancel request success message
+                  showMessage("Friend request canceled!", "alert alert-danger");
+              } else {
+                  button.innerText = "Cancel Request";
+                  button.classList.remove("btn-primary");
+                  button.classList.add("btn-danger");
+
+                  // Show friend request sent success message
+                  showMessage("Friend request sent!", "alert alert-success");
+              }
+
+              // Update the form action dynamically
+              form.action = isCanceling 
+                  ? "@Url.Action("SendFriendRequest", "Friendships", new { receiverId = Model.Id })" 
+                  : "@Url.Action("CancelFriendRequest", "Friendships", new { receiverId = Model.Id })";
+          })
+          .catch(error => {
+              console.error('There was a problem with the fetch operation:', error);
+              button.innerText = isCanceling ? "Cancel Request" : "Add Friend";
+          });
+
+    });
+
+    // Function to dynamically show messages
+    function showMessage(text, className) {
+        var messageDiv = document.createElement("div");
+        messageDiv.className = className + " text-center";
+        messageDiv.innerText = text;
+        document.body.insertBefore(messageDiv, document.body.firstChild);
+        
+        // Remove message after 3 seconds
+        setTimeout(() => messageDiv.remove(), 3000);
+    }
+</script>
