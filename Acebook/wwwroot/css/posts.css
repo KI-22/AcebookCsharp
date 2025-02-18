@@ -250,6 +250,27 @@ nav .profile-buttons {
     background: rgba(255, 99, 71, 0.4) !important;
     color: #d63b2f !important;
 }
+.friendship-button-container {
+    position: absolute;
+    left: 20px; /* Adjust as needed */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%);
+}
+
+.friendship-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1877f2; /* Facebook blue */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.friendship-button:hover {
+    background-color: #125abe;
+}
+
 
 /* 📱 Mobile Styles */
 @media (max-width: 768px) {
