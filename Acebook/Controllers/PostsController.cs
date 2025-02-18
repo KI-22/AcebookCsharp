@@ -52,11 +52,32 @@ public class PostsController : Controller
             .ToList() ?? new List<Post>();
         ViewBag.CurrentUsersPosts = currentUsersPosts;
 
+        // // Get likes count
+        var likesCount = dbContext.Likes
+            .Where(l => l.PostId.HasValue)
+            .GroupBy(l => l.PostId.Value)
+            .Select(g => new { PostId = g.Key, Count = g.Count() })
+            .ToList();
+        Dictionary<int, int> dictPostLikes = likesCount.ToDictionary(l => l.PostId, l => l.Count);
+        ViewBag.LikesCount = dictPostLikes;
+
+
         // // Like vs Unlike button
-        ViewBag.LikeOrUnlike = "Like"; // temp value
-        
-        // // Get likes count (TBC)
-        ViewBag.LikesCount = 10; // temp value
+        var likedCheck = dbContext.Likes
+            .Where(l => l.PostId.HasValue)
+            .GroupBy(l => l.PostId.Value)
+            .Select(g => new 
+            { 
+                PostId = g.Key, 
+                UserIds = g.Where(l => l.UserId.HasValue).Select(l => l.UserId.Value).ToList()  // Only include non-null UserIds
+            })
+            .ToList();
+
+        // Convert the result into a dictionary where the key is postId, and the value is a list of userIds
+        Dictionary<int, List<int>> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => l.UserIds);
+
+        // Dictionary<int, string> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => "Like");
+        ViewBag.LikeUnlike = dictLikeUnlike;
 
         return View();
     }

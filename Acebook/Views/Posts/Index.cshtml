@@ -76,22 +76,44 @@
                 }
             </a>
             <p class="post-meta-date">Posted on: @post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
-                <div class="like-section">
-                    @{
-                        int likesCount = ViewBag.LikesCount ?? 0;
-                        string likeOrUnlike = ViewBag.LikeOrUnlike ?? "Like";
-                    }
-                    <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
-                        <button type="submit" class="like-btn">@likeOrUnlike</button>
-                    </form>
-                    <div class="like-count">
-                        <span>👍@likesCount</span>
-                    </div>
-                </div>
-                <div class="reactions">
-                </div>
 
-            <!-- Delete Button: Only show if the logged-in user owns the post -->
+            <div class="like-section">
+                @{
+                    var dictLikeUnlike = ViewBag.LikeUnlike as Dictionary<int, List<int>>;
+                }
+                <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
+                    @{
+                        bool hasLiked = dictLikeUnlike != null && dictLikeUnlike.ContainsKey(post.Id) && dictLikeUnlike[post.Id].Contains(ViewBag.CurrentUser.Id);
+                        var likeOrUnlike = hasLiked ? "Unlike" : "Like";
+                    }
+                    <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+                </form>
+                <div class="like-count">
+                    @{
+                        var likesCount = ViewBag.LikesCount as Dictionary<int, int>;
+                        if (likesCount != null)
+                        {   
+                            if (likesCount.ContainsKey(post.Id))
+                            {
+                                <span>👍@likesCount[post.Id] likes</span>
+                            }
+                            else{
+                                <span>👍0 likes</span>
+                            }
+                        }
+                        else 
+                        {
+                            <span>👍0 likes</span>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="comment-count">
+                <span>0 comments</span> 
+            </div>
+        
+        <!-- Delete Button: Only show if the logged-in user owns the post -->
             @if (Context.Session.GetInt32("user_id") == post.UserId)
             {
                 <form action="@Url.Action("Delete", "Posts", new { id = post.Id })" method="post">
@@ -101,6 +123,7 @@
                 </form>
             }
         </div>
+        
     </div>
 }
 
