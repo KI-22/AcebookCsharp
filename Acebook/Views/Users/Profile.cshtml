@@ -42,7 +42,7 @@
         <h1 class="user-name-profile">@Model.Name</h1>
         <a href="@Url.Action("Index", "Friendships")" class="btn btn-primary">Friends</a>
     </div>
-@if (Context.Session.GetString("Username") == ViewBag.ProfileUserName)
+@if (Context.Session.GetString("Username") == Model.Name)
 {
     <div class="post-form-profile">
         <form action="/posts" method="post" enctype="multipart/form-data">
