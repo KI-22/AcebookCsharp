@@ -1,3 +1,6 @@
+@model acebook.Models.Friendship
+@using acebook.Models
+
 @{
     ViewData["Title"] = "Friendship Page";
 }
@@ -5,11 +8,26 @@
 <div class="text-center">
     <h1>Your Acebook Friendships</h1>
 
-    <a href="@Url.Action("SendFriendRequest", "Friendships")" class="btn btn-primary">Add a Friend</a>
+    <a class="friend-request-button" href="@Url.Action("SendFriendRequest", "Friendships")" class="btn btn-primary">Add a Friend</a>
 
-    @foreach (Friendship friendship in ViewBag.Friendship)
+    <h2>Requests:</h2>
+    @foreach (var friendship in ViewBag.CurrentUsersFriendships)
     {
+        <div> You have a request from: @friendship.User1Id </div>
 
+        <form action="@Url.Action("AcceptRequest", "Friendships")" method="post">
+            <button class="friend-request-button" type="submit">Accept</button>
+        </form>
+
+        <form action="@Url.Action("RejectRequest", "Friendships")" method="post">
+            <button class="friend-request-button" type="submit">Reject</button>
+        </form>
     }
 
+    <h2> Your Friends:</h2>
+    @foreach (var friendship in ViewBag.CurrentUsersAcceptedFriendships)
+    {
+        <div> Your Friend: @friendship.User1Id </div>
+        <button method="post" class="friend-request-button" type="button" onclick="location.href='@Url.Action("RemoveFriend", "Friendships")'">Remove</button>
+    }
 </div>
