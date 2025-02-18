@@ -13,7 +13,7 @@
     <h2>Requests:</h2>
     @foreach (var friendship in ViewBag.CurrentUsersFriendships)
     {
-        <div> You have a request from: @friendship.User1Id </div>
+        <div> You have a request from: @friendship.User1.Name </div>
 
         <form action="@Url.Action("AcceptRequest", "Friendships")" method="post">
             <button class="friend-request-button" type="submit">Accept</button>
@@ -27,7 +27,7 @@
     <h2> Your Friends:</h2>
     @foreach (var friendship in ViewBag.CurrentUsersAcceptedFriendships)
     {
-        <div> Your Friend: @friendship.User1Id </div>
+        <div> Your Friend: @friendship.User1.Name </div>
         <button method="post" class="friend-request-button" type="button" onclick="location.href='@Url.Action("RemoveFriend", "Friendships")'">Remove</button>
     }
 </div>
