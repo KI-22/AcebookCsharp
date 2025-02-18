@@ -93,6 +93,62 @@ public class UsersController : Controller
         // Store the posts in ViewBag so the Profile page can access them
         ViewBag.CurrentUsersPosts = userPosts;
 
+        // // // Get likes count        
+        // if (dbContext.Likes != null)
+        // {
+        //     int likesCountForPost = dbContext.Likes
+        //         .Where(l => l.PostId == userPosts.Id) // ISSUE here << need post id
+        //         .Count();
+        //     ViewBag.PostLikesCount = likesCountForPost;
+        // }
+
+        // // // Like vs Unlike button
+        // if (dbContext.Likes != null)
+        // {
+        //     // Check if there is a like entry for the specific user and post
+        //     bool isLiked = dbContext.Likes
+        //         .Any(l => l.PostId == userPosts.Id && l.UserId == user.Id); // ISSUE here << need post id
+
+        //     ViewBag.PostLikeUnlike = isLiked ? "Unlike" : "Like";
+        // }
+
+        // Get the likes count for each post based on the userPosts list
+        if (userPosts != null)
+            {
+                var postLikesCount = new Dictionary<int, int>(); // To store likes count per post
+                
+                foreach (var post in userPosts)
+                {
+                    // Get the count of likes for this post
+                    int likesCountForPost = dbContext.Likes
+                        .Where(l => l.PostId == post.Id)
+                        .Count();
+                    
+                    postLikesCount[post.Id] = likesCountForPost;
+                }
+
+                // Store the likes count dictionary in ViewBag
+                ViewBag.PostLikesCount = postLikesCount;
+            }
+
+            // Determine Like or Unlike button for each post
+            if (userPosts != null)
+            {
+                var postLikeUnlike = new Dictionary<int, string>(); // To store Like/Unlike status per post
+                
+                foreach (var post in userPosts)
+                {
+                    // Check if the user has liked this post
+                    bool isLiked = dbContext.Likes
+                        .Any(l => l.PostId == post.Id && l.UserId == user.Id);
+                    
+                    postLikeUnlike[post.Id] = isLiked ? "Unlike" : "Like";
+                }
+
+                // Store the Like/Unlike dictionary in ViewBag
+                ViewBag.PostLikeUnlike = postLikeUnlike;
+            }
+
         return View(user);
         }
     }

@@ -28,8 +28,8 @@ public class LikesController : Controller
 
         if (existingLike != null)
         {
-            Console.WriteLine("Like already exists. Removed from table.");
-            return new RedirectResult("/posts");
+            Console.WriteLine("Like already exists.");
+            return new RedirectResult("/posts"); // ISSUE here for liking when not on feed
         }
 
         Console.WriteLine("PostId: " + postId);
@@ -46,7 +46,7 @@ public class LikesController : Controller
         dbContext.Likes.Add(like);
         dbContext.SaveChanges();
 
-        return new RedirectResult("/posts");
+        return new RedirectResult("/posts"); // ISSUE here for liking when not on feed
     }
 
 }
