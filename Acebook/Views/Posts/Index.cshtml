@@ -107,12 +107,28 @@
                         }
                     }
                 </div>
+                <div class="comment-count">
+                    <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
+                    @{
+                        var commentsCount = ViewBag.CommentsCount as Dictionary<int, int>;
+                        if (commentsCount != null)
+                        {   
+                            if (commentsCount.ContainsKey(post.Id))
+                            {
+                                <span>💬@commentsCount[post.Id] comments</span>
+                            }
+                            else{
+                                <span>👍0 comments</span>
+                            }
+                        }
+                        else 
+                        {
+                            <span>💬0 comments</span>
+                        }
+                    }
+                    </a>
+                </div>
             </div>
-
-            <div class="comment-count">
-                <span>0 comments</span> 
-            </div>
-        
         <!-- Delete Button: Only show if the logged-in user owns the post -->
             @if (Context.Session.GetInt32("user_id") == post.UserId)
             {
