@@ -116,3 +116,17 @@ To rollback the second, you again use `dotnet ef database update` but this time 
   Updated the Profile and Posts/Index views to display the "Delete Post" button.
   Improved styling for the Profile and Posts/Index pages.
 
+
+## Pull Request1 RemovePosts
+  The Comments table has been created in the models.
+  Comment relationships have been set up in AcebookDbContext.
+  The GetComments and CreateComment actions have been implemented in CommentsController.
+  Comments are displayed under each individual post, along with an add comment form in Views/Posts/GetPost.cshtml.
+  Comments are ordered newest first, showing the timestamp of when they were posted.
+  Each comment is displayed with the commenter's name and profile picture.
+
+  //Next Steps:
+  Display the number of likes and comments on individual post pages.
+  Show the comment count for each post on the feed and profile pages.
+  Allow users to delete their own comments.
+
