@@ -108,10 +108,16 @@ public class UsersController : Controller
         ViewBag.IsFriends = isFriend;
         ViewBag.IsFriendRequestPending = isFriendRequestPending;
         ViewBag.RestrictedProfile = user.IsPrivate && !isFriend && currentUserId != user.Id;
-        ViewBag.CurrentUsersPosts = await dbContext.Posts
-            .Where(p => p.UserId == user.Id)
-            .OrderByDescending(p => p.CreatedAt)
-            .ToListAsync();
+        List<Post>? userPosts = null;
+        if (dbContext.Posts != null)
+        {
+            userPosts = await dbContext.Posts
+                .Where(p => p.UserId == user.Id)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+        }
+
+        ViewBag.CurrentUsersPosts = userPosts;
 
         // // // Get likes count        
 
