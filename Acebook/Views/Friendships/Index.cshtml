@@ -8,7 +8,7 @@
 <div class="text-center">
     <h1>Your Acebook Friendships</h1>
 
-    <a class="friend-request-button" href="@Url.Action("SendFriendRequest", "Friendships")" class="btn btn-primary">Add a Friend</a>
+    @* <a class="friend-request-button" href="@Url.Action("SendFriendRequest", "Friendships")" class="btn btn-primary">Add a Friend</a> *@
 
     <h2>Requests:</h2>
     @foreach (var friendship in ViewBag.CurrentUsersFriendships)
