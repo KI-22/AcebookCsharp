@@ -44,7 +44,20 @@ public class AcebookDbContext : DbContext
           .IsUnique();
 
         modelBuilder.Entity<Friendship>()
-        .HasIndex(f => new { f.User1Id, f.User2Id })
-        .IsUnique(); // Prevents duplicate friendships
+          .HasIndex(f => new { f.User1Id, f.User2Id })
+          .IsUnique(); // Prevents duplicate friendships
+
+        //  Define Friendships Relationships Properly
+        modelBuilder.Entity<Friendship>()
+          .HasOne(f => f.User1)
+          .WithMany(u => u.SentFriendRequests) // One User can send many requests
+          .HasForeignKey(f => f.User1Id)
+          .OnDelete(DeleteBehavior.Restrict);
+
+    modelBuilder.Entity<Friendship>()
+        .HasOne(f => f.User2)
+        .WithMany(u => u.ReceivedFriendRequests) // One User can receive many requests
+        .HasForeignKey(f => f.User2Id)
+        .OnDelete(DeleteBehavior.Restrict);
     }
 }

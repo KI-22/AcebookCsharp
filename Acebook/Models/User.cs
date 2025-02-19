@@ -43,7 +43,7 @@ public class User
 
   
 
-
-
+  public virtual ICollection<Friendship> SentFriendRequests { get; set; } = new List<Friendship>();
+  public virtual ICollection<Friendship> ReceivedFriendRequests { get; set; } = new List<Friendship>();
   public ICollection<Post>? Posts {get; set;} // relationship
 }
