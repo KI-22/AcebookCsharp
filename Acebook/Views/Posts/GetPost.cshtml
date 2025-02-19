@@ -104,6 +104,12 @@
                         <p class="post-text-profile">@comment.Content</p>
                         <p class="post-meta-profile">Commented on: @comment.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
                     </div>
+                    @if (comment.UserId == Context.Session.GetInt32("user_id"))
+                    {
+                        <form action="@Url.Action("Delete", "Comments", new { id = ViewBag.PostId, commentId = comment.Id })" method="post" style="display:inline;">
+                            <button type="submit" class="delete-button-post" onclick="return confirm('Are you sure you want to delete this comment?')">Delete Comment</button>
+                        </form>
+                    }
                 </li>
             }
         </ul>
