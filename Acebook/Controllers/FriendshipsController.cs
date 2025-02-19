@@ -20,9 +20,9 @@ public class FriendshipsController : Controller
 
     [Route("/Friendships")]
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        using (AcebookDbContext dbContext = new AcebookDbContext())
+        using (var dbContext = new AcebookDbContext())
         {
             int? currentUserId = HttpContext.Session.GetInt32("user_id");
 
@@ -31,37 +31,48 @@ public class FriendshipsController : Controller
                 return RedirectToAction("Signin", "Sessions");
             }
 
-            User? currentUser = dbContext.Users?.FirstOrDefault(u => u.Id == currentUserId.Value);
-            if (currentUser != null)
-            {
-                ViewBag.CurrentUser = currentUser;
-            }
+            var currentUser = await dbContext.Users
+                .Include(u => u.SentFriendRequests)
+                    .ThenInclude(f => f.User2)
+                .Include(u => u.ReceivedFriendRequests)
+                    .ThenInclude(f => f.User1)
+                .FirstOrDefaultAsync(u => u.Id == currentUserId.Value);
 
-            // Fetch Pending Friend Requests
-            List<Friendship> currentUsersFriendships = dbContext.Friendships? 
-                .Where(r => r.User2Id == currentUserId.Value)
-                .Where(r => r.FriendshipStatus == "Pending")
-                .Include(f => f.User1)
-                .ToList() ?? new List<Friendship>();
-            ViewBag.CurrentUsersFriendships = currentUsersFriendships;
 
-            // ✅ Fetch Accepted Friendships and Exclude Self-Friendships
-            List<Friendship> currentUsersAcceptedFriendships = dbContext.Friendships?
-                .Where(r => (r.User1Id == currentUserId.Value || r.User2Id == currentUserId.Value) &&
-                             r.FriendshipStatus == "Accepted" &&
-                             r.User1Id != r.User2Id)  // ✅ EXCLUDE self-friendships
-                .Include(f => f.User1)
-                .Include(f => f.User2)
-                .ToList() ?? new List<Friendship>();
+        if (currentUser == null)
+        {
+            return NotFound();
+        }
 
-            var uniqueFriendships = currentUsersAcceptedFriendships
-                .GroupBy(f => new { MinId = Math.Min(f.User1Id, f.User2Id), MaxId = Math.Max(f.User1Id, f.User2Id) })
-                .Select(g => g.First())
-                .ToList();
+        // Get Pending Friend Requests
+        var pendingRequests = (currentUser.ReceivedFriendRequests ?? new List<Friendship>())
+            .Where(f => f.FriendshipStatus == "Pending")
+            .ToList();
+        ViewBag.CurrentUsersFriendships = pendingRequests;
 
-            ViewBag.CurrentUsersAcceptedFriendships = uniqueFriendships;
+        //  Get Accepted Friendships
+        var acceptedFriendships = (currentUser.SentFriendRequests ?? new List<Friendship>())
+            .Where(f => f.FriendshipStatus == "Accepted")
+            .Select(f => f.User2) // User2 is the recipient
+            .Where(user => user != null) // Prevent null users
+            .Cast<User>() // Ensure type safety
+            .ToList();
 
-            return View();
+        acceptedFriendships.AddRange(
+            (currentUser.ReceivedFriendRequests ?? new List<Friendship>())
+            .Where(f => f.FriendshipStatus == "Accepted")
+            .Select(f => f.User1) // User1 is the sender
+            .Where(user => user != null) // Prevent null users
+            .Cast<User>() // Ensure type safety
+        );
+
+        // Remove Duplicates and Self-Friendships
+        ViewBag.CurrentUsersAcceptedFriendships = acceptedFriendships
+            .Where(friend => friend.Id != currentUserId.Value) // No self-friendships
+            .DistinctBy(friend => friend.Id) // Remove duplicates
+            .ToList();
+
+        return View();
         }
     }
 

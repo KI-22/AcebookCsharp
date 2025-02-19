@@ -27,9 +27,8 @@
     }
 
     <h2> Your Friends:</h2>
-    @foreach (var friendship in ViewBag.CurrentUsersAcceptedFriendships)
-    {
-        var friend = friendship.User1Id == ViewBag.CurrentUser.Id ? friendship.User2 : friendship.User1;
+    @foreach (var friend in ViewBag.CurrentUsersAcceptedFriendships)
+    {   
         <div> Your Friend: @friend.Name </div>
         <form action="@Url.Action("RemoveFriend", "Friendships")" method="post">
             <input type="hidden" name="friendId" value="@friend.Id" />
