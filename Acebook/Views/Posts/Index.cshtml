@@ -17,14 +17,6 @@
     </div>
 }
 
-<nav class="navbar">
-    <div class="nav-container">
-        <!-- Search Form -->
-        <form action="@Url.Action("SearchUser", "Users")" method="get" class="search-form">
-            <input type="text" name="query" placeholder="Search username..." class="search-input" required>
-            <button type="submit" class="search-button">Search</button>
-        </form>
-</nav>
 
 <div class="profile-buttons">
     @if (Context.Session.GetString("Username") == ViewBag.ProfileUserName)
