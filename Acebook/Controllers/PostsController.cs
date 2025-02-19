@@ -167,9 +167,11 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
             return NotFound();
         }
 
-        var post = await dbContext.Posts
-            // .Include(p => p.Comments)
-            .FirstOrDefaultAsync(p => p.Id == postId);
+        var post = dbContext.Posts
+            .Include(p => p.User)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.User)
+            .FirstOrDefault(p => p.Id == postId);
 
 
         if (post == null)
@@ -183,8 +185,6 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
         //     .ToListAsync();
 
         // // Store the comments in ViewBag so the Profile page can access them
-        List<string> postComments = new List<string>{"Loved it", "Great post", "Nice one"};
-        ViewBag.PostsComments = postComments;
         ViewBag.Post = post;
 
         // // Get likes count        

@@ -1,5 +1,5 @@
-@model acebook.Models.Post
 @using acebook.Models
+@model acebook.Models.Post
 
 @{
     var errorMessage = TempData["ErrorMessage"];
@@ -60,39 +60,41 @@
         </div>
     </div>
 </div>
+
+<div class="=comment-form">
+    <form action="@Url.Action("CreateComment", "Comments", new { postId = ViewBag.Post.Id })" method="post">
+        <input type="hidden" name="PostId" value="@ViewBag.Post.Id" />
+        <div class="input-container-comment">
+            <input type="text" name="Content"placeholder="Write a comment..." required class="comment-input" />
+        </div>
+        <button type="submit" class="comment-btn">Comment</button>
+    </form>
+
 </div>
 <div class="posts-container-profile">
-        <h2>Comments</h2>
-        @{
-            var comments = ViewBag.PostsComments;
-        }
-        @if (comments != null)
-        {
-            <ul>
-                @foreach (var comment in comments)
-                {
-                    @* <a href="@Url.Action("GetComment", "Comments", new { commentId = comment.Id })" class="post-link"> *@
-                    <li class="post-container-profile">
-                        <div class="user-info-profile">
-                            <img src="@(string.IsNullOrEmpty(Model.User?.profilePicture) ? "/images/default-profile.png" : Model.User.profilePicture)" alt="Profile" class="profile-pic-profile" />
-                            <span class="user-name-profile">@Model.User?.Name</span>
-                        </div>
-                        <div class="post-content-profile">
-                            <p class="post-text-profile">@comment</p>
-                            @* <p class="post-meta-profile">Commented on: @comment.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p> *@
-                            <!-- Reactions Section -->
-                            <div class="reactions-profile">
-                                <span class="like-count-profile">0</span>
-                            </div>
-                        </div>
-                    </li>
-                    @* </a> *@
-                }
-            </ul>
-        }
-        else
-        {
-            <p>No comments available.</p>
-        }
-    </div>
+    <h2>Comments</h2>
+
+    @{ var sortedComments = Model.Comments.OrderByDescending(c => c.CreatedAt).ToList(); }
+    @if (sortedComments != null && sortedComments.Any())  // ✅ Use Model instead of ViewBag
+    {
+        <ul>
+            @foreach (var comment in sortedComments)
+            {
+                <li class="post-container-profile">
+                    <div class="user-info-profile">
+                        <img src="@(string.IsNullOrEmpty(comment.User?.profilePicture) ? "/images/default-profile.png" : comment.User.profilePicture)" alt="Profile" class="profile-pic-profile" />
+                        <span class="user-name-profile">@comment.User?.Name</span>
+                    </div>
+                    <div class="post-content-profile">
+                        <p class="post-text-profile">@comment.Content</p>
+                        <p class="post-meta-profile">Commented on: @comment.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No comments available.</p>
+    }
 </div>

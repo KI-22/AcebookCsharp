@@ -37,6 +37,10 @@ public class UsersController : Controller
         {
             ModelState.AddModelError("Email", "Email is already in use.");
         }
+        if (string.IsNullOrWhiteSpace(user.FullName))
+        {
+            ModelState.AddModelError("FullName", "Full name is required.");
+        }
 
         if (!ModelState.IsValid)
         {
@@ -49,6 +53,10 @@ public class UsersController : Controller
         {
             user.Password = passwordHasher.HashPassword(user, user.Password);
         }
+
+        user.JoinedDate = DateTime.UtcNow;
+        user.Bio = "";
+        user.IsPrivate = false;
 
         dbContext.Users?.Add(user);
         dbContext.SaveChanges();
@@ -81,6 +89,27 @@ public class UsersController : Controller
         {
             return NotFound();
         }
+        var currentUserId = HttpContext.Session.GetInt32("user_id");
+        
+        bool isFriend = false;
+
+        if (currentUserId.HasValue)
+        {
+            isFriend = await dbContext.Friendships
+                .AnyAsync(f => 
+                    (f.User1Id == currentUserId.Value && f.User2Id == user.Id) || 
+                    (f.User2Id == currentUserId.Value && f.User1Id == user.Id) &&
+                    f.FriendshipStatus == "Accepted");
+        }
+
+        //  Restrict profile if it's private & the user is not a friend
+        if (user.IsPrivate && currentUserId != user.Id && !isFriend)
+        {
+            ViewBag.RestrictedProfile = true;
+            return View(user); // Shows limited profile info
+        }
+
+        //  Fetch posts only if the profile is public or viewer is a friend
         List<Post>? userPosts = null;
         if (dbContext.Posts != null)
         {
@@ -90,8 +119,18 @@ public class UsersController : Controller
                 .ToListAsync();
         }
 
-        // Store the posts in ViewBag so the Profile page can access them
+        //  Check if a friend request is pending
+        bool isFriendRequestPending = false;
+        if (currentUserId.HasValue)
+        {
+            isFriendRequestPending = await dbContext.Friendships
+                .AnyAsync(f => f.User1Id == currentUserId.Value && f.User2Id == user.Id && f.FriendshipStatus == "Pending");
+        }
+
+        //  Store the posts and friendship status in ViewBag
         ViewBag.CurrentUsersPosts = userPosts;
+        ViewBag.IsFriendRequestPending = isFriendRequestPending;
+        ViewBag.RestrictedProfile = false;
 
         // // // Get likes count        
 
@@ -202,6 +241,22 @@ public class UsersController : Controller
         {
             return View(userToUpdate);
         }
+
+        if (!string.IsNullOrWhiteSpace(user.FullName))
+        {
+            userToUpdate.FullName = user.FullName;
+        }
+
+        if (!string.IsNullOrWhiteSpace(user.Bio))
+        {
+            userToUpdate.Bio = user.Bio;
+        }
+
+        //  Allow users to toggle Privacy setting
+        userToUpdate.IsPrivate = user.IsPrivate;
+
+        // Ensure `JoinedDate` is NOT changed
+        userToUpdate.JoinedDate = userToUpdate.JoinedDate;
 
         // Update fields if changed
         if (!string.IsNullOrWhiteSpace(user.Name))
@@ -333,6 +388,31 @@ public class UsersController : Controller
         return RedirectToAction("Profile", new { username = userToUpdate.Name });
         }
     }
+
+    [Route("/users/search")]
+    [HttpGet]
+    public async Task<IActionResult> SearchUser(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            TempData["ErrorMessage"] = "Please enter a valid username.";
+            return RedirectToAction("Index", "Posts");
+        }
+
+        using (var dbContext = new AcebookDbContext())
+        {
+            var user = await dbContext.Users
+                .FirstOrDefaultAsync(u => u.Name.ToLower() == query.ToLower());
+
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Index", "Posts");
+            }
+
+            return RedirectToAction("Profile", "Users", new { username = user.Name });
+        }
+    }   
 }
 
 

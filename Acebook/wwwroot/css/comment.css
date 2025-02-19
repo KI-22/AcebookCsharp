@@ -1,0 +1,46 @@
+/* 📝 Comment Form - Centering the entire form */
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    margin: 0 auto;
+}
+
+/* 📝 Comment Input */
+.comment-input {
+    height: 100px;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    resize: none;
+    width: 150%;
+    max-width: 500px;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+
+/* 📩 Comment Button */
+.comment-btn {
+    background: rgba(180, 85, 255, 0.8);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    margin: 10px auto 0;
+}
+
+.comment-btn:hover {
+    background: rgba(180, 85, 255, 1);
+}

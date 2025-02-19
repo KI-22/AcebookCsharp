@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using acebook.Models;
@@ -11,9 +12,11 @@ using acebook.Models;
 namespace acebook.Migrations
 {
     [DbContext(typeof(AcebookDbContext))]
-    partial class AcebookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250219101504_ImprovedFriendshipRelationship")]
+    partial class ImprovedFriendshipRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,37 +24,6 @@ namespace acebook.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("acebook.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("PostId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments");
-                });
 
             modelBuilder.Entity("acebook.Models.Friendship", b =>
                 {
@@ -177,22 +149,6 @@ namespace acebook.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("acebook.Models.Comment", b =>
-                {
-                    b.HasOne("acebook.Models.Post", "Post")
-                        .WithMany("Comments")
-                        .HasForeignKey("PostId");
-
-                    b.HasOne("acebook.Models.User", "User")
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("acebook.Models.Friendship", b =>
                 {
                     b.HasOne("acebook.Models.User", "User1")
@@ -238,15 +194,8 @@ namespace acebook.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("acebook.Models.Post", b =>
-                {
-                    b.Navigation("Comments");
-                });
-
             modelBuilder.Entity("acebook.Models.User", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Posts");
 
                     b.Navigation("ReceivedFriendRequests");

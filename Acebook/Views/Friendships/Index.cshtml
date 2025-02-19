@@ -15,19 +15,24 @@
     {
         <div> You have a request from: @friendship.User1.Name </div>
 
-        <form action="@Url.Action("AcceptRequest", "Friendships")" method="post">
-            <button class="friend-request-button" type="submit">Accept</button>
-        </form>
+    <form action="@Url.Action("AcceptRequest", "Friendships")" method="post">
+        <input type="hidden" name="requesterId" value="@friendship.User1Id" />
+        <button class="friend-request-button" type="submit">Accept</button>
+    </form>
 
-        <form action="@Url.Action("RejectRequest", "Friendships")" method="post">
-            <button class="friend-request-button" type="submit">Reject</button>
-        </form>
+    <form action="@Url.Action("RejectRequest", "Friendships")" method="post">
+        <input type="hidden" name="requesterId" value="@friendship.User1Id" />
+        <button class="friend-request-button" type="submit">Reject</button>
+    </form>
     }
 
     <h2> Your Friends:</h2>
-    @foreach (var friendship in ViewBag.CurrentUsersAcceptedFriendships)
-    {
-        <div> Your Friend: @friendship.User1.Name </div>
-        <button method="post" class="friend-request-button" type="button" onclick="location.href='@Url.Action("RemoveFriend", "Friendships")'">Remove</button>
+    @foreach (var friend in ViewBag.CurrentUsersAcceptedFriendships)
+    {   
+        <div> Your Friend: @friend.Name </div>
+        <form action="@Url.Action("RemoveFriend", "Friendships")" method="post">
+            <input type="hidden" name="friendId" value="@friend.Id" />
+            <button class="friend-request-button" type="submit">Remove</button>
+        </form>
     }
 </div>
