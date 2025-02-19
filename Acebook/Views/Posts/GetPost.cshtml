@@ -36,34 +36,34 @@
         <p class="post-meta-date">Posted on: @ViewBag.Post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
 
     <div>
-        <div class="like-section">
-                @{
-                    var likeOrUnlike = ViewBag.PostLikeUnlike as string;
-                    string methodLikeUnlike;
+    <div class="like-section">
+        @{
+            var likeOrUnlike = ViewBag.PostLikeUnlike as string;
+            string methodLikeUnlike;
 
-                    if (likeOrUnlike == "Like")
-                    {
-                        methodLikeUnlike = "LikePost";
-                    }
-                    else
-                    {
-                        methodLikeUnlike = "UnlikePost";
-                    }
+            if (likeOrUnlike == "Like")
+            {
+                methodLikeUnlike = "LikePost";
+            }
+            else
+            {
+                methodLikeUnlike = "UnlikePost";
+            }
+        }
+        <form method="post" asp-controller="Likes" asp-action="@methodLikeUnlike" asp-route-postId="@ViewBag.Post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
+            <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+        </form>
+        <div class="like-count">
+            @{
+                if (@ViewBag.PostLikesCount != null)
+                { 
+                    <span>👍@ViewBag.PostLikesCount likes</span>
                 }
-                <form method="post" asp-controller="Likes" asp-action="@methodLikeUnlike" asp-route-postId="@ViewBag.Post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
-                    <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
-                </form>
-                <div class="like-count">
-                    @{
-                        if (@ViewBag.PostLikesCount != null)
-                        { 
-                        <span>👍@ViewBag.PostLikesCount likes</span>
-                        }
-                        else{
-                            Console.WriteLine("@ViewBag.PostLikesCount is NULL");
-                        }
-                    }
-                </div>
+                else
+                {
+                        Console.WriteLine("@ViewBag.PostLikesCount is NULL");
+                }
+            }
         </div>
     </div>
 </div>
@@ -76,11 +76,9 @@
         </div>
         <button type="submit" class="comment-btn">Comment</button>
     </form>
-
 </div>
 <div class="posts-container-profile">
     <h2>Comments</h2>
-
     @{ var sortedComments = Model.Comments.OrderByDescending(c => c.CreatedAt).ToList(); }
     @if (sortedComments != null && sortedComments.Any())  // ✅ Use Model instead of ViewBag
     {
