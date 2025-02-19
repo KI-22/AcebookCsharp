@@ -15,38 +15,43 @@ public class LikesController : Controller
         _logger = logger;   
     }
 
-    // POST Request (to like a post)
+    // POST Request (to like a post) << v2
     [Route("/posts/{postId}/like")]
     [HttpPost]
-    public IActionResult LikePost(int postId)
+    // public IActionResult LikePost(int postId, string returnUrl = null)
+    public IActionResult LikePost(int postId, string returnUrl)
     {
         AcebookDbContext dbContext = new AcebookDbContext();
         int? currentUserId = HttpContext.Session.GetInt32("user_id");
 
-        // // Check if the user has already liked the post
+        // Check if the user has already liked the post
         var existingLike = dbContext.Likes.FirstOrDefault(l => l.PostId == postId && l.UserId == currentUserId);
 
         if (existingLike != null)
         {
             Console.WriteLine("Like already exists.");
-            return new RedirectResult("/posts"); // ISSUE here for liking when not on feed
+            // User has already liked the post, set to "Unlike"
+            ViewBag.PostLikeUnlike = "Unlike";
         }
-
-        Console.WriteLine("PostId: " + postId);
-        Console.WriteLine("UserId: " + currentUserId);
-
-    
-        // Add the like
-        var like = new Likes
+        else
         {
-            PostId = postId,
-            UserId = currentUserId
-        };
+            Console.WriteLine("PostId: " + postId);
+            Console.WriteLine("UserId: " + currentUserId);
 
-        dbContext.Likes.Add(like);
-        dbContext.SaveChanges();
+            // Add the like
+            var like = new Likes
+            {
+                PostId = postId,
+                UserId = currentUserId
+            };
 
-        return new RedirectResult("/posts"); // ISSUE here for liking when not on feed
+            dbContext.Likes.Add(like);
+            dbContext.SaveChanges();
+
+            // Set button text to "Unlike" after adding like
+            ViewBag.PostLikeUnlike = "Unlike";
+        }
+        
+        return new RedirectResult(returnUrl); 
     }
-
 }

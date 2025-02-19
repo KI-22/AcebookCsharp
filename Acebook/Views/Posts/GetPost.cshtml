@@ -40,7 +40,7 @@
                 @{
                     var dictLikeUnlike = ViewBag.LikeUnlike as Dictionary<int, List<int>>;
                 }
-                <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@ViewBag.Post.Id">
+                <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@ViewBag.Post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
                     @{
                         var likeOrUnlike =@ViewBag.PostLikeUnlike;
                     }

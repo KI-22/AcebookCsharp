@@ -94,23 +94,6 @@ public class UsersController : Controller
         ViewBag.CurrentUsersPosts = userPosts;
 
         // // // Get likes count        
-        // if (dbContext.Likes != null)
-        // {
-        //     int likesCountForPost = dbContext.Likes
-        //         .Where(l => l.PostId == userPosts.Id) // ISSUE here << need post id
-        //         .Count();
-        //     ViewBag.PostLikesCount = likesCountForPost;
-        // }
-
-        // // // Like vs Unlike button
-        // if (dbContext.Likes != null)
-        // {
-        //     // Check if there is a like entry for the specific user and post
-        //     bool isLiked = dbContext.Likes
-        //         .Any(l => l.PostId == userPosts.Id && l.UserId == user.Id); // ISSUE here << need post id
-
-        //     ViewBag.PostLikeUnlike = isLiked ? "Unlike" : "Like";
-        // }
 
         // Get the likes count for each post based on the userPosts list
         if (userPosts != null)
@@ -131,26 +114,8 @@ public class UsersController : Controller
                 ViewBag.PostLikesCount = postLikesCount;
             }
 
-            // // Determine Like or Unlike button for each post
-            // if (userPosts != null)
-            // {
-            //     var postLikeUnlike = new Dictionary<int, string>(); // To store Like/Unlike status per post
-                
-            //     foreach (var post in userPosts)
-            //     {
-            //         // Check if the user has liked this post
-            //         bool isLiked = dbContext.Likes
-            //             .Any(l => l.PostId == post.Id && l.UserId == user.Id);
-                    
-            //         postLikeUnlike[post.Id] = isLiked ? "Unlike" : "Like";
-            //     }
-
-            //     // Store the Like/Unlike dictionary in ViewBag
-            //     ViewBag.PostLikeUnlike = postLikeUnlike;
-            // }
-
             // // Like vs Unlike button
-            // // Like vs Unlike button
+            ViewBag.currentUserId = HttpContext.Session.GetInt32("user_id");
             var likedCheck = dbContext.Likes
                 .Where(l => l.PostId.HasValue)
                 .GroupBy(l => l.PostId.Value)
@@ -164,7 +129,6 @@ public class UsersController : Controller
             // Convert the result into a dictionary where the key is postId, and the value is a list of userIds
             Dictionary<int, List<int>> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => l.UserIds);
 
-            // Dictionary<int, string> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => "Like");
             if (dictLikeUnlike == null){
                 Console.WriteLine("controller - dictLikeUnlike - NULL");
             }
@@ -172,6 +136,9 @@ public class UsersController : Controller
                 Console.WriteLine("controller - dictLikeUnlike - NOT null");
             }
             ViewBag.LikeUnlike = dictLikeUnlike;
+
+            // current URL
+            ViewBag.CurrentURL = Request.Path + Request.QueryString;
 
         return View(user);
         }

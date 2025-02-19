@@ -81,7 +81,8 @@
                 @{
                     var dictLikeUnlike = ViewBag.LikeUnlike as Dictionary<int, List<int>>;
                 }
-                <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
+                @* <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id"> *@
+                <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
                     @{
                         bool hasLiked = dictLikeUnlike != null && dictLikeUnlike.ContainsKey(post.Id) && dictLikeUnlike[post.Id].Contains(ViewBag.CurrentUser.Id);
                         var likeOrUnlike = hasLiked ? "Unlike" : "Like";

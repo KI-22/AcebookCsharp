@@ -79,6 +79,9 @@ public class PostsController : Controller
         // Dictionary<int, string> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => "Like");
         ViewBag.LikeUnlike = dictLikeUnlike;
 
+        // current URL
+        ViewBag.CurrentURL = Request.Path + Request.QueryString;
+
         return View();
     }
 
@@ -202,6 +205,9 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
 
             ViewBag.PostLikeUnlike = isLiked ? "Unlike" : "Like";
         }
+
+        // current URL
+        ViewBag.CurrentURL = Request.Path + Request.QueryString;
 
         return View(post);
         
