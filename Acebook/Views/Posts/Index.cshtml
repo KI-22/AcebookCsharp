@@ -81,13 +81,11 @@
             <div class="like-section">
                 @{
                     var dictLikeUnlike = ViewBag.LikeUnlike as Dictionary<int, List<int>>;
+                    bool hasLiked = dictLikeUnlike != null && dictLikeUnlike.ContainsKey(post.Id) && dictLikeUnlike[post.Id].Contains(ViewBag.CurrentUser.Id);
+                    var likeOrUnlike = hasLiked ? "Unlike" : "Like";
+                    var methodLikeUnlike = hasLiked ? "UnlikePost" : "LikePost";
                 }
-                @* <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id"> *@
-                <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
-                    @{
-                        bool hasLiked = dictLikeUnlike != null && dictLikeUnlike.ContainsKey(post.Id) && dictLikeUnlike[post.Id].Contains(ViewBag.CurrentUser.Id);
-                        var likeOrUnlike = hasLiked ? "Unlike" : "Like";
-                    }
+                <form method="post" asp-controller="Likes" asp-action="@methodLikeUnlike" asp-route-postId="@post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
                     <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
                 </form>
                 <div class="like-count">
