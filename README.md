@@ -117,7 +117,7 @@ To rollback the second, you again use `dotnet ef database update` but this time 
   Improved styling for the Profile and Posts/Index pages.
 
 
-## Pull Request1 RemovePosts
+## Pull Request17 Add Comments
   The Comments table has been created in the models.
   Comment relationships have been set up in AcebookDbContext.
   The GetComments and CreateComment actions have been implemented in CommentsController.
