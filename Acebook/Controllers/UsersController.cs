@@ -131,23 +131,47 @@ public class UsersController : Controller
                 ViewBag.PostLikesCount = postLikesCount;
             }
 
-            // Determine Like or Unlike button for each post
-            if (userPosts != null)
-            {
-                var postLikeUnlike = new Dictionary<int, string>(); // To store Like/Unlike status per post
+            // // Determine Like or Unlike button for each post
+            // if (userPosts != null)
+            // {
+            //     var postLikeUnlike = new Dictionary<int, string>(); // To store Like/Unlike status per post
                 
-                foreach (var post in userPosts)
-                {
-                    // Check if the user has liked this post
-                    bool isLiked = dbContext.Likes
-                        .Any(l => l.PostId == post.Id && l.UserId == user.Id);
+            //     foreach (var post in userPosts)
+            //     {
+            //         // Check if the user has liked this post
+            //         bool isLiked = dbContext.Likes
+            //             .Any(l => l.PostId == post.Id && l.UserId == user.Id);
                     
-                    postLikeUnlike[post.Id] = isLiked ? "Unlike" : "Like";
-                }
+            //         postLikeUnlike[post.Id] = isLiked ? "Unlike" : "Like";
+            //     }
 
-                // Store the Like/Unlike dictionary in ViewBag
-                ViewBag.PostLikeUnlike = postLikeUnlike;
+            //     // Store the Like/Unlike dictionary in ViewBag
+            //     ViewBag.PostLikeUnlike = postLikeUnlike;
+            // }
+
+            // // Like vs Unlike button
+            // // Like vs Unlike button
+            var likedCheck = dbContext.Likes
+                .Where(l => l.PostId.HasValue)
+                .GroupBy(l => l.PostId.Value)
+                .Select(g => new 
+                { 
+                    PostId = g.Key, 
+                    UserIds = g.Where(l => l.UserId.HasValue).Select(l => l.UserId.Value).ToList()  // Only include non-null UserIds
+                })
+                .ToList();
+
+            // Convert the result into a dictionary where the key is postId, and the value is a list of userIds
+            Dictionary<int, List<int>> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => l.UserIds);
+
+            // Dictionary<int, string> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => "Like");
+            if (dictLikeUnlike == null){
+                Console.WriteLine("controller - dictLikeUnlike - NULL");
             }
+            else{
+                Console.WriteLine("controller - dictLikeUnlike - NOT null");
+            }
+            ViewBag.LikeUnlike = dictLikeUnlike;
 
         return View(user);
         }
