@@ -125,3 +125,16 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 - in post.test line 168 and 213, i had to change the image path to my path
 - var imageFilePath = "/Users/arthurbotto/week-11-acebook/csharp-acebook-mvc-umbrella/Acebook/wwwroot/images/il_1588xN.1965501418_pspx.png";
 - not sure how it works for you guys.
+
+
+#### UserRelated Pull request
+Changed a few things on friendship controller, had to fix that when user 1 added user 2, when user 2 accepted the request,
+user 2 would see user 1 as friend, but user 1 wouldnt see user 2 as friend unless user 2 requested user 1 to be friend.
+added remove friend route
+added cancel request route
+Added FullName, Bio, JoinedDate and IsPrivate columns in User.cs
+made users profile being private to work, so it wont show your posts when users are not friends.
+create account form now asks for Name as well. 
+edit account allows to edit a name,  choose a bio and choose private or public profile.
+added search user route in user controller
+aded navigation bar that finds user by username

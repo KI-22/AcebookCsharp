@@ -16,9 +16,9 @@ public class AcebookDbContext : DbContext
 
       if( DatabaseNameArg == null)
       {
-        System.Console.WriteLine(
-          "DATABASE_NAME is null. Defaulting to test database."
-        );
+        // System.Console.WriteLine(
+        //   "DATABASE_NAME is null. Defaulting to test database."
+        // );
         return "acebook_csharp_test";
       }
       else
@@ -38,8 +38,13 @@ public class AcebookDbContext : DbContext
         modelBuilder.Entity<Post>()
           .Navigation(post => post.User)
           .AutoInclude();
-          modelBuilder.Entity<User>()
+        
+        modelBuilder.Entity<User>()
           .HasIndex(u => u.Email)
           .IsUnique();
+
+        modelBuilder.Entity<Friendship>()
+        .HasIndex(f => new { f.User1Id, f.User2Id })
+        .IsUnique(); // Prevents duplicate friendships
     }
 }
