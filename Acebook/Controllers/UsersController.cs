@@ -132,28 +132,23 @@ public class UsersController : Controller
         ViewBag.IsFriendRequestPending = isFriendRequestPending;
         ViewBag.RestrictedProfile = false;
 
-        // // // Get likes count        
-
-        // Get the likes count for each post based on the userPosts list
+        // Get likes count        
         if (userPosts != null)
             {
-                var postLikesCount = new Dictionary<int, int>(); // To store likes count per post
+                var postLikesCount = new Dictionary<int, int>();
                 
                 foreach (var post in userPosts)
                 {
-                    // Get the count of likes for this post
                     int likesCountForPost = dbContext.Likes
                         .Where(l => l.PostId == post.Id)
                         .Count();
                     
                     postLikesCount[post.Id] = likesCountForPost;
                 }
-
-                // Store the likes count dictionary in ViewBag
                 ViewBag.PostLikesCount = postLikesCount;
             }
 
-            // // Like vs Unlike button
+            // Like vs Unlike button
             ViewBag.currentUserId = HttpContext.Session.GetInt32("user_id");
             var likedCheck = dbContext.Likes
                 .Where(l => l.PostId.HasValue)
@@ -165,15 +160,8 @@ public class UsersController : Controller
                 })
                 .ToList();
 
-            // Convert the result into a dictionary where the key is postId, and the value is a list of userIds
             Dictionary<int, List<int>> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => l.UserIds);
 
-            if (dictLikeUnlike == null){
-                Console.WriteLine("controller - dictLikeUnlike - NULL");
-            }
-            else{
-                Console.WriteLine("controller - dictLikeUnlike - NOT null");
-            }
             ViewBag.LikeUnlike = dictLikeUnlike;
 
             // current URL

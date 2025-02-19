@@ -38,12 +38,19 @@
     <div>
         <div class="like-section">
                 @{
-                    var dictLikeUnlike = ViewBag.LikeUnlike as Dictionary<int, List<int>>;
-                }
-                <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@ViewBag.Post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
-                    @{
-                        var likeOrUnlike =@ViewBag.PostLikeUnlike;
+                    var likeOrUnlike = ViewBag.PostLikeUnlike as string;
+                    string methodLikeUnlike;
+
+                    if (likeOrUnlike == "Like")
+                    {
+                        methodLikeUnlike = "LikePost";
                     }
+                    else
+                    {
+                        methodLikeUnlike = "UnlikePost";
+                    }
+                }
+                <form method="post" asp-controller="Likes" asp-action="@methodLikeUnlike" asp-route-postId="@ViewBag.Post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
                     <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
                 </form>
                 <div class="like-count">
