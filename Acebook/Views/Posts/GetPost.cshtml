@@ -56,10 +56,11 @@
 <div class="posts-container-profile">
     <h2>Comments</h2>
 
-    @if (Model.Comments != null && Model.Comments.Any())  // ✅ Use Model instead of ViewBag
+    @{ var sortedComments = Model.Comments.OrderByDescending(c => c.CreatedAt).ToList(); }
+    @if (sortedComments != null && sortedComments.Any())  // ✅ Use Model instead of ViewBag
     {
         <ul>
-            @foreach (var comment in Model.Comments)
+            @foreach (var comment in sortedComments)
             {
                 <li class="post-container-profile">
                     <div class="user-info-profile">

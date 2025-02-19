@@ -28,15 +28,14 @@ public class CommentsController : Controller
         }
 
         // Fetch comments for the post
-        List<Comment> comments = dbContext.Comments
-            .Include(c => c.User)
-            .Where(c => c.PostId == postId)
-            .OrderByDescending(c => c.CreatedAt)
-            .ToList();
+        var comments = dbContext.Comments
+        .Include(c => c.User)
+        .Where(c => c.PostId == postId)
+        .OrderByDescending(c => c.CreatedAt)  // Ensure newest comments first
+        .ToList();
 
         return View("Comments", comments);  // ✅ Pass the List<Comment> directly
     }
-
 
     [Route("/posts/{postId}/comments")]
     [HttpPost]
