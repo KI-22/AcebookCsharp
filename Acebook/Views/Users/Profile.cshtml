@@ -122,18 +122,46 @@
                                 </a>
                                 <p class="post-meta-profile">Posted on: @post.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
                                 <div>
-                                    @{
-                                        int likesCount = ViewBag.LikesCount ?? 0; // defaults to 0 otherwise
-                                        string likeOrUnlike = ViewBag.LikeOrUnlike ?? "Like"; // defaults to "Like"
-                                    }
-                                    <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
-                                        <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
-                                    </form>
-                                </div>
+                                  @{
+                                      var likesCount = ViewBag.PostLikesCount as Dictionary<int, int>;
+                                      var dictLikeUnlike = ViewBag.LikeUnlike as Dictionary<int, List<int>>;
+                                  }
+
+
+                                  <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
+                                      @{
+                                          string likeOrUnlike = "error"; // Default value
+                                          if (dictLikeUnlike != null)
+                                          {
+                                              bool hasLiked = dictLikeUnlike != null && dictLikeUnlike.ContainsKey(post.Id) && dictLikeUnlike[post.Id].Contains(ViewBag.currentUserId ); //  && dictLikeUnlike[post.Id].Contains(ViewBag.CurrentUser.Id) // ViewBag.currentUserId 
+                                              likeOrUnlike = hasLiked ? "Unlike" : "Like";
+                                          }
+
+                                      }
+                                      <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+                                  </form>
+
                                 <div class="reactions-profile">
                                     <div class="like-count">
-                                        <span>👍@likesCount</span>
-                                    </div>
+                                    @{
+                                        if (likesCount != null)
+                                        {   
+                                            if (likesCount.ContainsKey(post.Id))
+                                            {
+                                                <span>👍@likesCount[post.Id] likes</span>
+                                            }
+                                            else{
+                                                <span>👍-1 likes</span> // testing
+                                            }
+                                        }
+                                        else 
+                                        {
+                                            <span>👍-2 likes</span> // testing
+                                        }
+                                    }
+                                </div>
+                                </div>                                
+                                  
                                     @if (Context.Session.GetInt32("user_id") == post.UserId)
                                     {
                                         <form asp-controller="Posts" asp-action="Delete" method="post" asp-route-id="@post.Id">

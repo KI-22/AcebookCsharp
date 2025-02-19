@@ -34,16 +34,33 @@
             <img src="@ViewBag.Post.PostImage" alt="Post Image" class="post-image" />
         }
         <p class="post-meta-date">Posted on: @ViewBag.Post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
-    </div>
-    <div class="reactions">
-        <div class="like-count">
-            <span>0</span> 
-        </div>
-        <div class="comment-count">
-            <span>0</span> 
+
+    <div>
+        <div class="like-section">
+                @{
+                    var dictLikeUnlike = ViewBag.LikeUnlike as Dictionary<int, List<int>>;
+                }
+                <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@ViewBag.Post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
+                    @{
+                        var likeOrUnlike =@ViewBag.PostLikeUnlike;
+                    }
+                    <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+                </form>
+                <div class="like-count">
+                    @{
+                        if (@ViewBag.PostLikesCount != null)
+                        { 
+                        <span>👍@ViewBag.PostLikesCount likes</span>
+                        }
+                        else{
+                            Console.WriteLine("@ViewBag.PostLikesCount is NULL");
+                        }
+                    }
+                </div>
         </div>
     </div>
 </div>
+
 <div class="=comment-form">
     <form action="@Url.Action("CreateComment", "Comments", new { postId = ViewBag.Post.Id })" method="post">
         <input type="hidden" name="PostId" value="@ViewBag.Post.Id" />
@@ -52,6 +69,7 @@
         </div>
         <button type="submit" class="comment-btn">Comment</button>
     </form>
+
 </div>
 <div class="posts-container-profile">
     <h2>Comments</h2>
