@@ -341,6 +341,31 @@ public class UsersController : Controller
         return RedirectToAction("Profile", new { username = userToUpdate.Name });
         }
     }
+
+    [Route("/users/search")]
+    [HttpGet]
+    public async Task<IActionResult> SearchUser(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            TempData["ErrorMessage"] = "Please enter a valid username.";
+            return RedirectToAction("Index", "Posts");
+        }
+
+        using (var dbContext = new AcebookDbContext())
+        {
+            var user = await dbContext.Users
+                .FirstOrDefaultAsync(u => u.Name.ToLower() == query.ToLower());
+
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Index", "Posts");
+            }
+
+            return RedirectToAction("Profile", "Users", new { username = user.Name });
+        }
+    }   
 }
 
 

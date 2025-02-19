@@ -136,4 +136,5 @@ Added FullName, Bio, JoinedDate and IsPrivate columns in User.cs
 made users profile being private to work, so it wont show your posts when users are not friends.
 create account form now asks for Name as well. 
 edit account allows to edit a name,  choose a bio and choose private or public profile.
-
+added search user route in user controller
+aded navigation bar that finds user by username
