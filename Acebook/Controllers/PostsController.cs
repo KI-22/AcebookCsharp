@@ -79,6 +79,9 @@ public class PostsController : Controller
         // Dictionary<int, string> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => "Like");
         ViewBag.LikeUnlike = dictLikeUnlike;
 
+        // current URL
+        ViewBag.CurrentURL = Request.Path + Request.QueryString;
+
         return View();
     }
 
@@ -183,6 +186,29 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
 
         // // Store the comments in ViewBag so the Profile page can access them
         ViewBag.Post = post;
+
+        // // Get likes count        
+        if (dbContext.Likes != null)
+        {
+            int likesCountForPost = dbContext.Likes
+                .Where(l => l.PostId == postId)
+                .Count();
+            ViewBag.PostLikesCount = likesCountForPost;
+        }
+
+        // // Like vs Unlike button
+        if (dbContext.Likes != null)
+        {
+            // Check if there is a like entry for the specific user and post
+            bool isLiked = dbContext.Likes
+                .Any(l => l.PostId == postId && l.UserId == currentUser.Id);
+
+            ViewBag.PostLikeUnlike = isLiked ? "Unlike" : "Like";
+        }
+
+        // current URL
+        ViewBag.CurrentURL = Request.Path + Request.QueryString;
+
         return View(post);
         
     }
