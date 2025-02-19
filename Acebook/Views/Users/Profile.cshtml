@@ -5,6 +5,7 @@
     var errorMessage = TempData["ErrorMessage"];
     var currentUserId = Context.Session.GetInt32("user_id");
     var isFriendRequestPending = ViewBag.IsFriendRequestPending ?? false;
+    var restrictedProfile = ViewBag.RestrictedProfile ?? false;
 }
 
 @if (successMessage != null)
@@ -60,86 +61,102 @@
         <p class="user-bio-profile">@Model.Bio</p>
         <p>Member since: @Model.JoinedDate.ToString("MMMM dd, yyyy")</p>
         <a href="@Url.Action("Index", "Friendships")" class="friends-link-profile">Friends</a>
+
+        @if (restrictedProfile == true)
+        {
+            <p class="private-profile">This profile is private.</p>
+        }
     </div>
-@if (Context.Session.GetString("Username") == Model.Name)
-{
-    <div class="post-form-profile">
-        <form action="/posts" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="ReturnUrl" value="@Context.Request.Path.Value" />
-            
-            <div class="input-container-profile">
-                <input type="text" id="PostText" name="PostText" placeholder="What's on your mind?" class="post-input-profile" />
-            </div>
-
-            <div class="image-upload-profile">
-                <label for="PostImageUrl"></label>
-                <input type="text" id="PostImageUrl" name="PostImageUrl" placeholder="Enter image URL" class="image-input-profile" />
-                <span>or</span>
-                <input type="file" id="PostImageFile" name="PostImageFile" class="file-input-profile" />
-                <button type="submit" id="submit" class="post-btn-profile">Post</button>
-            </div>
-        </form>
-    </div>
-}
 
 
-    <div class="posts-container-profile">
-    <h2>@Model.Name's Posts</h2>
-    @{
-        var posts = ViewBag.CurrentUsersPosts as IEnumerable<Post>;
-    }
-    @if (posts != null && posts.Any())
+    @if (Context.Session.GetString("Username") == Model.Name)
     {
-        <ul>
-            @foreach (var post in posts)
-            {
-                <li class="post-container-profile">
-                    <div class="user-info-profile">
-                        <a href="@Url.Action("Profile", "Users", new { username = post.User?.Name })" class="post-link">
-                        <img src="@(string.IsNullOrEmpty(post.User?.profilePicture) ? "/images/default-profile.png" : post.User.profilePicture)" 
-                            alt="User Profile Picture" class="profile-pic" />
-                        <p class="user-name">@post.User?.Name</p>
-                        </a>
-                    </div>
-                    <div class="post-content-profile">
-                        <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
-                            <p class="post-text-profile">@post.PostText</p>
-                            @if (!string.IsNullOrEmpty(post.PostImage))
-                            {
-                                <img src="@post.PostImage" alt="Post Image" class="post-image-profile" />
-                            }
-                        </a>
-                        <p class="post-meta-profile">Posted on: @post.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
-                        <div>
-                            @{
-                                int likesCount = ViewBag.LikesCount ?? 0; // defaults to 0 otherwise
-                                string likeOrUnlike = ViewBag.LikeOrUnlike ?? "Like"; // defaults to "Like"
-                            }
-                            <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
-                                <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
-                            </form>
-                        </div>
-                        <div class="reactions-profile">
-                            <div class="like-count">
-                                <span>👍@likesCount</span>
-                            </div>
-                            @if (Context.Session.GetInt32("user_id") == post.UserId)
-                            {
-                                <form asp-controller="Posts" asp-action="Delete" method="post" asp-route-id="@post.Id">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="ReturnUrl" value="@Context.Request.Path" />
-                                    <button type="submit" class="delete-button-profile">Delete Post</button>
-                                </form>
-                            }
-                        </div>
-                    </div>
-                </li>
+        <div class="post-form-profile">
+            <form action="/posts" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="ReturnUrl" value="@Context.Request.Path.Value" />
+
+                <div class="input-container-profile">
+                    <input type="text" id="PostText" name="PostText" placeholder="What's on your mind?" class="post-input-profile" />
+                </div>
+
+                <div class="image-upload-profile">
+                    <label for="PostImageUrl"></label>
+                    <input type="text" id="PostImageUrl" name="PostImageUrl" placeholder="Enter image URL" class="image-input-profile" />
+                    <span>or</span>
+                    <input type="file" id="PostImageFile" name="PostImageFile" class="file-input-profile" />
+                    <button type="submit" id="submit" class="post-btn-profile">Post</button>
+                </div>
+            </form>
+        </div>
+    }
+
+
+
+    @if (restrictedProfile == false)
+    {
+        <div class="posts-container-profile">
+            <h2>@Model.Name's Posts</h2>
+            @{
+                var posts = ViewBag.CurrentUsersPosts as IEnumerable<Post>;
             }
-        </ul>
+            @if (posts != null && posts.Any())
+            {
+                <ul>
+                    @foreach (var post in posts)
+                    {
+                        <li class="post-container-profile">
+                            <div class="user-info-profile">
+                                <a href="@Url.Action("Profile", "Users", new { username = post.User?.Name })" class="post-link">
+                                <img src="@(string.IsNullOrEmpty(post.User?.profilePicture) ? "/images/default-profile.png" : post.User.profilePicture)" 
+                                    alt="User Profile Picture" class="profile-pic" />
+                                <p class="user-name">@post.User?.Name</p>
+                                </a>
+                            </div>
+                            <div class="post-content-profile">
+                                <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
+                                    <p class="post-text-profile">@post.PostText</p>
+                                    @if (!string.IsNullOrEmpty(post.PostImage))
+                                    {
+                                        <img src="@post.PostImage" alt="Post Image" class="post-image-profile" />
+                                    }
+                                </a>
+                                <p class="post-meta-profile">Posted on: @post.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
+                                <div>
+                                    @{
+                                        int likesCount = ViewBag.LikesCount ?? 0; // defaults to 0 otherwise
+                                        string likeOrUnlike = ViewBag.LikeOrUnlike ?? "Like"; // defaults to "Like"
+                                    }
+                                    <form method="post" asp-controller="Likes" asp-action="LikePost" asp-route-postId="@post.Id">
+                                        <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+                                    </form>
+                                </div>
+                                <div class="reactions-profile">
+                                    <div class="like-count">
+                                        <span>👍@likesCount</span>
+                                    </div>
+                                    @if (Context.Session.GetInt32("user_id") == post.UserId)
+                                    {
+                                        <form asp-controller="Posts" asp-action="Delete" method="post" asp-route-id="@post.Id">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="ReturnUrl" value="@Context.Request.Path" />
+                                            <button type="submit" class="delete-button-profile">Delete Post</button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No posts available.</p>
+            }
+        </div>
     }
     else
     {
-        <p>No posts available.</p>
+        <p>This user's posts are private.</p>
     }
 </div>
 
