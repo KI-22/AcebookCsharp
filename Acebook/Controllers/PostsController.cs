@@ -212,6 +212,14 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
             ViewBag.PostLikeUnlike = isLiked ? "Unlike" : "Like";
         }
 
+        if (dbContext.Comments != null)
+        {
+            int commentsCountForPost = dbContext.Comments
+                .Where(c => c.PostId == postId)
+                .Count();
+            ViewBag.PostCommentsCount = commentsCountForPost;
+        }
+
         // current URL
         ViewBag.CurrentURL = Request.Path + Request.QueryString;
 

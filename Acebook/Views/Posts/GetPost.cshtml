@@ -64,6 +64,16 @@
                         Console.WriteLine("@ViewBag.PostLikesCount is NULL");
                 }
             }
+            @{
+                if (@ViewBag.PostCommentsCount != null)
+                { 
+                    <span>💬@ViewBag.PostCommentsCount comments</span>
+                }
+                else
+                {
+                    <span>💬0 comments</span>
+                }
+            }
         </div>
     </div>
 </div>

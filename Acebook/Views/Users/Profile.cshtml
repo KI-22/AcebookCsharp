@@ -136,7 +136,6 @@
                                 <form method="post" asp-controller="Likes" asp-action="@methodLikeUnlike" asp-route-postId="@post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
                                     <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
                                 </form>
-
                                 <div class="reactions-profile">
                                     <div class="like-count">
                                     @{
@@ -167,7 +166,7 @@
                                                     <span>💬@commentsCount[post.Id] comments</span>
                                                 }
                                                 else{
-                                                    <span>👍0 comments</span>
+                                                    <span>💬0 comments</span>
                                                 }
                                             }
                                             else 
