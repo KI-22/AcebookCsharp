@@ -52,7 +52,7 @@ public class PostsController : Controller
             .ToList() ?? new List<Post>();
         ViewBag.CurrentUsersPosts = currentUsersPosts;
 
-        // // Get likes count
+        // Get likes count
         var likesCount = dbContext.Likes
             .Where(l => l.PostId.HasValue)
             .GroupBy(l => l.PostId.Value)
@@ -62,7 +62,7 @@ public class PostsController : Controller
         ViewBag.LikesCount = dictPostLikes;
 
 
-        // // Like vs Unlike button
+        // Like vs Unlike button
         var likedCheck = dbContext.Likes
             .Where(l => l.PostId.HasValue)
             .GroupBy(l => l.PostId.Value)
@@ -73,10 +73,7 @@ public class PostsController : Controller
             })
             .ToList();
 
-        // Convert the result into a dictionary where the key is postId, and the value is a list of userIds
         Dictionary<int, List<int>> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => l.UserIds);
-
-        // Dictionary<int, string> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => "Like");
         ViewBag.LikeUnlike = dictLikeUnlike;
 
         // current URL
@@ -187,7 +184,7 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
         // // Store the comments in ViewBag so the Profile page can access them
         ViewBag.Post = post;
 
-        // // Get likes count        
+        // Get likes count        
         if (dbContext.Likes != null)
         {
             int likesCountForPost = dbContext.Likes
@@ -196,10 +193,9 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
             ViewBag.PostLikesCount = likesCountForPost;
         }
 
-        // // Like vs Unlike button
+        // Like vs Unlike button
         if (dbContext.Likes != null)
         {
-            // Check if there is a like entry for the specific user and post
             bool isLiked = dbContext.Likes
                 .Any(l => l.PostId == postId && l.UserId == currentUser.Id);
 
