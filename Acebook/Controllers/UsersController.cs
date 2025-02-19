@@ -90,26 +90,24 @@ public class UsersController : Controller
             return NotFound();
         }
         var currentUserId = HttpContext.Session.GetInt32("user_id");
-        
         bool isFriend = false;
+        bool isFriendRequestPending = false;
 
         if (currentUserId.HasValue)
         {
             isFriend = await dbContext.Friendships
                 .AnyAsync(f => 
-                    (f.User1Id == currentUserId.Value && f.User2Id == user.Id) || 
-                    (f.User2Id == currentUserId.Value && f.User1Id == user.Id) &&
+                    (f.User1Id == currentUserId.Value && f.User2Id == user.Id ||
+                    f.User2Id == currentUserId.Value && f.User1Id == user.Id) &&
                     f.FriendshipStatus == "Accepted");
+
+            isFriendRequestPending = await dbContext.Friendships
+                .AnyAsync(f => f.User1Id == currentUserId.Value && f.User2Id == user.Id && f.FriendshipStatus == "Pending");
         }
 
-        //  Restrict profile if it's private & the user is not a friend
-        if (user.IsPrivate && currentUserId != user.Id && !isFriend)
-        {
-            ViewBag.RestrictedProfile = true;
-            return View(user); // Shows limited profile info
-        }
-
-        //  Fetch posts only if the profile is public or viewer is a friend
+        ViewBag.IsFriends = isFriend;
+        ViewBag.IsFriendRequestPending = isFriendRequestPending;
+        ViewBag.RestrictedProfile = user.IsPrivate && !isFriend && currentUserId != user.Id;
         List<Post>? userPosts = null;
         if (dbContext.Posts != null)
         {
@@ -119,18 +117,7 @@ public class UsersController : Controller
                 .ToListAsync();
         }
 
-        //  Check if a friend request is pending
-        bool isFriendRequestPending = false;
-        if (currentUserId.HasValue)
-        {
-            isFriendRequestPending = await dbContext.Friendships
-                .AnyAsync(f => f.User1Id == currentUserId.Value && f.User2Id == user.Id && f.FriendshipStatus == "Pending");
-        }
-
-        //  Store the posts and friendship status in ViewBag
         ViewBag.CurrentUsersPosts = userPosts;
-        ViewBag.IsFriendRequestPending = isFriendRequestPending;
-        ViewBag.RestrictedProfile = false;
 
         // Get likes count        
         if (userPosts != null)

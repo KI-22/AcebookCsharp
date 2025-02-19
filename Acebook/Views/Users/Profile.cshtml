@@ -24,11 +24,14 @@
 <div class="profile-buttons">
     @if (Context.Session.GetString("Username") != null && Context.Session.GetString("Username") != Model.Name)
     {
-    <form id="friendRequestForm"
-            action="@Url.Action(isFriendRequestPending ? "CancelFriendRequest" : "SendFriendRequest", "Friendships", new { receiverId = Model.Id })"
-            method="post" style="display:inline;">
-            <button type="submit" id="friendRequestButton" class="btn @(isFriendRequestPending ? "btn-danger" : "btn-primary")">
-                @(isFriendRequestPending ? "Cancel Request" : "Add Friend")
+        <form id="friendRequestForm"
+            action="@Url.Action(ViewBag.IsFriendRequestPending ? "CancelFriendRequest" : "SendFriendRequest", "Friendships")"
+            method="post">
+            <input type="hidden" name="receiverId" value="@Model.Id" />
+            <button type="submit" id="friendRequestButton"
+                class="btn @(ViewBag.IsFriendRequestPending ? "btn-danger" : (ViewBag.IsFriends ? "btn-success" : "btn-primary"))" 
+                @(ViewBag.IsFriends ? "disabled" : "")>
+                @(ViewBag.IsFriends ? "Friends ✅" : (ViewBag.IsFriendRequestPending ? "Cancel Request" : "Add Friend"))
             </button>
         </form>
     }
@@ -196,53 +199,64 @@
 
 
 <script>
-    document.getElementById("friendRequestForm").addEventListener("submit", function(event) {
-        event.preventDefault();
-        var form = event.target;
-        var button = document.getElementById("friendRequestButton");
-        var isCanceling = button.innerText.trim() === "Cancel Request";
+document.getElementById("friendRequestForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    var form = event.target;
+    var button = document.getElementById("friendRequestButton");
+    var isCanceling = button.innerText.trim() === "Cancel Request";
 
-        fetch(form.action, {
-            method: form.method,
-            body: new FormData(form)
-        }).then(response => response.text())
-          .then(data => {
-              if (isCanceling) {
-                  button.innerText = "Add Friend";
-                  button.classList.remove("btn-danger");
-                  button.classList.add("btn-primary");
+    fetch(form.action, {
+        method: form.method,
+        body: new FormData(form)
+    })
+    .then(response => response.json())  
+    .then(data => {
+        if (data.success) {
+            if (isCanceling) {
+                button.innerText = "Add Friend";
+                button.classList.remove("btn-danger");
+                button.classList.add("btn-primary");
+                showMessage("Friend request canceled!", "alert alert-danger");
+            } else {
+                button.innerText = "Cancel Request";
+                button.classList.remove("btn-primary");
+                button.classList.add("btn-danger");
+                showMessage("Friend request sent!", "alert alert-success");
+            }
 
-                  // Show cancel request success message
-                  showMessage("Friend request canceled!", "alert alert-danger");
-              } else {
-                  button.innerText = "Cancel Request";
-                  button.classList.remove("btn-primary");
-                  button.classList.add("btn-danger");
+            // Disable button for 3 seconds to prevent multiple clicks
+            button.disabled = true;
+            setTimeout(() => { button.disabled = false; }, 3000);
 
-                  // Show friend request sent success message
-                  showMessage("Friend request sent!", "alert alert-success");
-              }
-
-              // Update the form action dynamically
-              form.action = isCanceling 
-                  ? "@Url.Action("SendFriendRequest", "Friendships", new { receiverId = Model.Id })" 
-                  : "@Url.Action("CancelFriendRequest", "Friendships", new { receiverId = Model.Id })";
-          })
-          .catch(error => {
-              console.error('There was a problem with the fetch operation:', error);
-              button.innerText = isCanceling ? "Cancel Request" : "Add Friend";
-          });
-
+            // Update form action dynamically
+            form.action = isCanceling 
+                ? "@Url.Action("SendFriendRequest", "Friendships")"
+                : "@Url.Action("CancelFriendRequest", "Friendships")";
+        } else {
+            showMessage(data.message, "alert alert-warning");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage("Something went wrong. Please try again.", "alert alert-danger");
     });
+});
 
-    // Function to dynamically show messages
-    function showMessage(text, className) {
-        var messageDiv = document.createElement("div");
-        messageDiv.className = className + " text-center";
-        messageDiv.innerText = text;
-        document.body.insertBefore(messageDiv, document.body.firstChild);
-        
-        // Remove message after 3 seconds
-        setTimeout(() => messageDiv.remove(), 3000);
+// If user is already friends, disable button and change text
+window.onload = function() {
+    var button = document.getElementById("friendRequestButton");
+    if (button.innerText.trim() === "Friends ✅") {
+        button.disabled = true;
     }
+};
+
+function showMessage(text, className) {
+    var messageDiv = document.createElement("div");
+    messageDiv.className = className + " text-center";
+    messageDiv.innerText = text;
+    document.body.insertBefore(messageDiv, document.body.firstChild);
+    
+    setTimeout(() => messageDiv.remove(), 3000);
+}
 </script>

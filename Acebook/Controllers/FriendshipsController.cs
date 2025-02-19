@@ -100,11 +100,16 @@ public class FriendshipsController : Controller
 
         int senderId = CurrentUserId.Value;
 
-        var existingRequest = await dbContext.Friendships.FirstOrDefaultAsync(f => f.User1Id == senderId && f.User2Id == receiverId);
+        var existingRequest = await dbContext.Friendships
+        .FirstOrDefaultAsync(f =>
+             (f.User1Id == senderId && f.User2Id == receiverId) ||
+             (f.User2Id == senderId && f.User1Id == receiverId));
+
         if (existingRequest != null)
         {
-             return Json(new { success = false, message = "Friend request already sent." });
+             return Json(new { success = false, message = "You are already friends or have a pending request." });
         }
+
 
         var friendship = new Friendship
         {

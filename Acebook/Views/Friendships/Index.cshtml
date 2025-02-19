@@ -5,34 +5,57 @@
     ViewData["Title"] = "Friendship Page";
 }
 
-<div class="text-center">
-    <h1>Your Acebook Friendships</h1>
-
-    <a class="friend-request-button" href="@Url.Action("SendFriendRequest", "Friendships")" class="btn btn-primary">Add a Friend</a>
+<div class="friendship-container">
+    <h1 class="friendship-title">Your Acebook Friendships</h1>
 
     <h2>Requests:</h2>
-    @foreach (var friendship in ViewBag.CurrentUsersFriendships)
-    {
-        <div> You have a request from: @friendship.User1.Name </div>
+    <div class="friendship-section">
+        @if (ViewBag.CurrentUsersFriendships.Count == 0)
+        {
+            <p class="no-requests">No friend requests at the moment.</p>
+        }
+        else
+        {
+            @foreach (var friendship in ViewBag.CurrentUsersFriendships)
+            {
+                <div class="friend-request">
+                    <span>You have a request from: @friendship.User1.Name</span>
 
-    <form action="@Url.Action("AcceptRequest", "Friendships")" method="post">
-        <input type="hidden" name="requesterId" value="@friendship.User1Id" />
-        <button class="friend-request-button" type="submit">Accept</button>
-    </form>
+                    <div class="friend-buttons">
+                        <form action="@Url.Action("AcceptRequest", "Friendships")" method="post">
+                            <input type="hidden" name="requesterId" value="@friendship.User1Id" />
+                            <button class="friend-button accept" type="submit">Accept</button>
+                        </form>
 
-    <form action="@Url.Action("RejectRequest", "Friendships")" method="post">
-        <input type="hidden" name="requesterId" value="@friendship.User1Id" />
-        <button class="friend-request-button" type="submit">Reject</button>
-    </form>
-    }
+                        <form action="@Url.Action("RejectRequest", "Friendships")" method="post">
+                            <input type="hidden" name="requesterId" value="@friendship.User1Id" />
+                            <button class="friend-button reject" type="submit">Reject</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+    </div>
 
-    <h2> Your Friends:</h2>
-    @foreach (var friend in ViewBag.CurrentUsersAcceptedFriendships)
-    {   
-        <div> Your Friend: @friend.Name </div>
-        <form action="@Url.Action("RemoveFriend", "Friendships")" method="post">
-            <input type="hidden" name="friendId" value="@friend.Id" />
-            <button class="friend-request-button" type="submit">Remove</button>
-        </form>
-    }
+    <h2>Your Friends:</h2>
+    <div class="friendship-section">
+        @if (ViewBag.CurrentUsersAcceptedFriendships.Count == 0)
+        {
+            <p class="no-friends">You don't have any friends yet.</p>
+        }
+        else
+        {
+            @foreach (var friend in ViewBag.CurrentUsersAcceptedFriendships)
+            {   
+                <div class="friend-item">
+                    <span>Your Friend: @friend.Name</span>
+
+                    <form action="@Url.Action("RemoveFriend", "Friendships")" method="post">
+                        <input type="hidden" name="friendId" value="@friend.Id" />
+                        <button class="friend-button remove" type="submit">Remove</button>
+                    </form>
+                </div>
+            }
+        }
+    </div>
 </div>

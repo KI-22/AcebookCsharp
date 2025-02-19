@@ -1,16 +1,51 @@
-﻿@{
+﻿@model acebook.Models.User
+@{
     ViewData["Title"] = "Home Page";
 }
 
-
 <div class="home">
-    <div class="home-container">
-        <div class="home-box">
+    <div class="home-container" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="home-box" style="flex: 1;">
             <h1 id="greeting">Welcome To Acebook</h1>
-            <div class="home-buttons">
-                <a href="/signup" id="signup">Sign Up</a>
-                <a href="/signin" id="signin">Sign In</a>
-            </div>
+        </div>
+        <div class="form-container" style="flex: 1;">
+            <form class="login-form" asp-action="Create" asp-controller="Users" method="post">
+                <fieldset>
+                    <legend>Register Now</legend>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label class="control-label">Name</label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Username</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group" style="display: flex; flex-direction: column; gap: 10px;">
+                        <input type="submit" value="Create Account" class="btn btn-primary" />
+                        <div>
+                            <span>Already have an account? </span>
+                            <a href="/signin" class="btn btn-primary">Login</a>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
