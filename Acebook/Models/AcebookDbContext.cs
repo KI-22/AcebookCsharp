@@ -8,6 +8,7 @@ public class AcebookDbContext : DbContext
     public DbSet<User>? Users { get; set; }
     public DbSet<Friendship>? Friendships { get; set; }
     public DbSet<Likes>? Likes { get; set; }
+    public DbSet<Comment>? Comments { get; set; }
 
     public string? DbPath { get; }
 
@@ -54,10 +55,16 @@ public class AcebookDbContext : DbContext
           .HasForeignKey(f => f.User1Id)
           .OnDelete(DeleteBehavior.Restrict);
 
-    modelBuilder.Entity<Friendship>()
-        .HasOne(f => f.User2)
-        .WithMany(u => u.ReceivedFriendRequests) // One User can receive many requests
-        .HasForeignKey(f => f.User2Id)
-        .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Friendship>()
+            .HasOne(f => f.User2)
+            .WithMany(u => u.ReceivedFriendRequests) // One User can receive many requests
+            .HasForeignKey(f => f.User2Id)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Comment>()
+          .HasOne(c => c.User)
+          .WithMany(u => u.Comments)
+          .HasForeignKey(c => c.UserId)
+          .OnDelete(DeleteBehavior.Cascade);
     }
 }
