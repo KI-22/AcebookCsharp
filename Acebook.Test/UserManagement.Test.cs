@@ -276,5 +276,35 @@ namespace Acebook.Test
       Assert.That(currentUrl, Is.EqualTo("http://127.0.0.1:5287/signin"));
     }
 
+    [Test]
+    public void SignUp_DuplicateEmail_ShowsErrorMessage_11()
+    { 
+      string name = faker.Name.FullName();
+      string username = faker.Internet.UserName();
+      string email = faker.Internet.Email();
+      string password = "Admin123*";
+  
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signup");
+  
+      // First account creation
+      driver.FindElement(By.Name("FullName")).SendKeys(name);
+      driver.FindElement(By.Name("Name")).SendKeys(username);
+      driver.FindElement(By.Name("Email")).SendKeys(email);
+      driver.FindElement(By.Name("Password")).SendKeys(password);
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+  
+      // Try creating another account with the same email
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signup");
+      driver.FindElement(By.Name("FullName")).SendKeys(faker.Name.FullName()); // New name
+      driver.FindElement(By.Name("Name")).SendKeys(faker.Internet.UserName()); // New username
+      driver.FindElement(By.Name("Email")).SendKeys(email); // Same email
+      driver.FindElement(By.Name("Password")).SendKeys(password);
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+  
+      WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
+      IWebElement emailError = wait.Until(drv => drv.FindElement(By.CssSelector("span[data-valmsg-for='Email']")));
+  
+      Assert.That(emailError.Text.Trim(), Is.EqualTo("Email is already in use."));
+    }
   }
 }
