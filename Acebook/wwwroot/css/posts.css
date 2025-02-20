@@ -120,7 +120,8 @@
     resize: none;
     width: 100%;
     max-width: 100%;
-    min-width: 500px;
+    min-width: 100%;
+    color: #333;
 }
 
 /* 📸 Image Upload */

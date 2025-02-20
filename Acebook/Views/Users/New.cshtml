@@ -1,36 +1,38 @@
 @model acebook.Models.User
-
-
-<form class ="login-form" asp-action="Create" method="post">
+<form class="login-form" asp-action="Create" asp-controller="Users" method="post">
     <fieldset>
-        <legend>Create Account</legend>
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label class="control-label">Name</label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label class="control-label">Username</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Email" class="control-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Password" class="control-label"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="form-group" style="display: flex; gap: 10px;">
-        <input type="submit" value="Create" class="btn btn-primary" />
-        <a href="/signin" class="btn btn-primary">Login</a>
-    </div>
+        <legend>Register Now</legend>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            @* <label class="control-label">Name</label> *@
+            <input asp-for="FullName" class="form-control" placeholder="Name"/>
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            @* <label class="control-label">Username</label> *@
+            <input asp-for="Name" class="form-control" placeholder="Username"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            @* <label asp-for="Email" class="control-label"></label> *@
+            <input asp-for="Email" class="form-control" placeholder="Email"/>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            @* <label asp-for="Password" class="control-label"></label> *@
+            <input asp-for="Password" class="form-control" placeholder="Password"/>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="submit" value="Create Account" class="btn btn-primary" />
+            <div>
+                <span>Already have an account? </span>
+                <a href="/signin" class="btn btn-primary">Login</a>
+            </div>
+        </div>
     </fieldset>
 </form>
+        
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
