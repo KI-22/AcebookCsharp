@@ -29,101 +29,81 @@
         <button type="submit" class="btn btn-secondary">Logout</button>
     </form>
 </div>
-<div class="post-container">
-    <div class="user-info">
+
+<!-- 📌 Main Post Container -->
+<div class="post-container-getpost">
+    <div class="user-info-getpost">
         <img src="@(string.IsNullOrEmpty(ViewBag.Post.User?.profilePicture) ? "/images/default-profile.png" : ViewBag.Post.User.profilePicture)" 
-            alt="User Profile Picture" class="profile-pic" />
-        <p class="user-name">@ViewBag.Post.User?.Name</p>
+            alt="User Profile Picture" class="profile-pic-getpost" />
+        <p class="user-name-getpost">@ViewBag.Post.User?.Name</p>
     </div>
-    <div class="post-content">
-        <p class="post-text">@ViewBag.Post.PostText</p>
+
+    <!-- 📝 Post Content -->
+    <div class="post-content-getpost">
+        <p>@ViewBag.Post.PostText</p>
         @if (!string.IsNullOrEmpty(ViewBag.Post.PostImage))
         {
-            <img src="@ViewBag.Post.PostImage" alt="Post Image" class="post-image" />
+            <img src="@ViewBag.Post.PostImage" alt="Post Image" class="post-image-getpost" />
         }
-        <p class="post-meta-date">Posted on: @ViewBag.Post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
+        <p class="post-meta-date-getpost">Posted on: @ViewBag.Post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
+    </div>
 
-    <div>
-    <div class="like-section-postpage">
-        @{
-            var likeOrUnlike = ViewBag.PostLikeUnlike as string;
-            string methodLikeUnlike;
-
-            if (likeOrUnlike == "Like")
-            {
-                methodLikeUnlike = "LikePost";
-            }
-            else
-            {
-                methodLikeUnlike = "UnlikePost";
-            }
-        }
-        <form method="post" asp-controller="Likes" asp-action="@methodLikeUnlike" asp-route-postId="@ViewBag.Post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
-            <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+    <!-- 📩 Like, Comment, Delete Section -->
+    <div class="like-section-getpost">
+        <form method="post" asp-controller="Likes" asp-action="@((ViewBag.PostLikeUnlike as string) == "Like" ? "LikePost" : "UnlikePost")" asp-route-postId="@ViewBag.Post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
+            <button type="submit" class="like-btn-getpost">@ViewBag.PostLikeUnlike</button>
         </form>
+
         <div class="like-count">
-            @{
-                if (@ViewBag.PostLikesCount != null)
-                { 
-                    <span>👍@ViewBag.PostLikesCount likes</span>
-                }
-                else
-                {
-                        Console.WriteLine("@ViewBag.PostLikesCount is NULL");
-                }
-            }
-            @{
-                if (@ViewBag.PostCommentsCount != null)
-                { 
-                    <span>💬@ViewBag.PostCommentsCount comments</span>
-                }
-                else
-                {
-                    <span>💬0 comments</span>
-                }
-            }
-            @if (Context.Session.GetInt32("user_id") == ViewBag.Post.UserId)
-            {
-                <form action="@Url.Action("Delete", "Posts", new { id = ViewBag.Post.Id })" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="ReturnUrl" value="@Context.Request.Path" />
-                    <button type="submit" class="delete-button-postpage">Delete Post</button>
-                </form>
-            }
+            <span>👍 @ViewBag.PostLikesCount likes</span>
+            <span>💬 @ViewBag.PostCommentsCount comments</span>
         </div>
+
+        @if (Context.Session.GetInt32("user_id") == ViewBag.Post.UserId)
+        {
+            <form action="@Url.Action("Delete", "Posts", new { id = ViewBag.Post.Id })" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ReturnUrl" value="@Context.Request.Path" />
+                <button type="submit" class="delete-button-getpost" onclick="return confirm('Are you sure you want to delete this post?')">Delete Post</button>
+            </form>
+        }
     </div>
 </div>
 
-<div class="=comment-form">
+<!-- 📝 Comment Form -->
+<div class="comment-form-getpost">
     <form action="@Url.Action("CreateComment", "Comments", new { postId = ViewBag.Post.Id })" method="post">
         <input type="hidden" name="PostId" value="@ViewBag.Post.Id" />
-        <div class="input-container-comment">
-            <input type="text" name="Content"placeholder="Write a comment..." required class="comment-input" />
+        <div class="input-container-comment-getpost">
+            <input type="text" name="Content" placeholder="Write a comment..." required class="comment-input-getpost" />
         </div>
-        <button type="submit" class="comment-btn">Comment</button>
+        <button type="submit" class="comment-btn-getpost">Comment</button>
     </form>
 </div>
-<div class="posts-container-profile">
+
+<!-- 🗨️ Comments Section -->
+<div class="posts-container-profile-getpost">
     <h2>Comments</h2>
     @{ var sortedComments = Model.Comments.OrderByDescending(c => c.CreatedAt).ToList(); }
-    @if (sortedComments != null && sortedComments.Any())  // ✅ Use Model instead of ViewBag
+    @if (sortedComments != null && sortedComments.Any())
     {
         <ul>
             @foreach (var comment in sortedComments)
             {
-                <li class="post-container-profile">
-                    <div class="user-info-profile">
-                        <img src="@(string.IsNullOrEmpty(comment.User?.profilePicture) ? "/images/default-profile.png" : comment.User.profilePicture)" alt="Profile" class="profile-pic-profile" />
-                        <span class="user-name-profile">@comment.User?.Name</span>
+                <li class="post-container-profile-getpost">
+                    <div class="user-info-profile-getpost">
+                        <img src="@(string.IsNullOrEmpty(comment.User?.profilePicture) ? "/images/default-profile.png" : comment.User.profilePicture)" 
+                            alt="Profile" class="profile-pic-profile-getpost" />
+                        <span class="user-name-profile-getpost">@comment.User?.Name</span>
                     </div>
-                    <div class="post-content-profile">
-                        <p class="post-text-profile">@comment.Content</p>
-                        <p class="post-meta-profile">Commented on: @comment.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
+                    <div class="post-text-profile-getpost">
+                        <p>@comment.Content</p>
+                        <p class="post-meta-profile-getpost">Commented on: @comment.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</p>
                     </div>
                     @if (comment.UserId == Context.Session.GetInt32("user_id"))
                     {
                         <form method="post" action="/posts/@comment.PostId/comments/@comment.Id/delete">
-                            <button type="submit" class="delete-button-post" onclick="return confirm('Are you sure you want to delete this comment?')">Delete Comment</button>
+                            <button type="submit" class="delete-button-comment-getpost" onclick="return confirm('Are you sure you want to delete this comment?')">Delete Comment</button>
                         </form>
                     }
                 </li>
