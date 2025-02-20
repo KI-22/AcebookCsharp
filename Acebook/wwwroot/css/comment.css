@@ -44,3 +44,29 @@
 .comment-btn:hover {
     background: rgba(180, 85, 255, 1);
 }
+/* 🗑️ Delete Button - Align with Like & Comment */
+/* 🗑️ Delete Button - Move to Right & Make Rectangular */
+.like-section-postpage {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Push delete button to the right */
+    width: 100%;
+}
+
+/* Make Delete Button Rectangular */
+.delete-button-postpage {
+    background: rgba(255, 99, 71, 0.2) !important;
+    color: #ff6347 !important;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px; /* Less rounded, more rectangular */
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+    margin-left: auto; /* Pushes it to the right */
+}
+
+.delete-button-postpage:hover {
+    background: rgba(255, 99, 71, 1);
+    color: white;
+}

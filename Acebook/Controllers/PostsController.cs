@@ -256,14 +256,18 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
         var likes = dbContext.Likes.Where(l => l.PostId == id);
         dbContext.Likes.RemoveRange(likes);
 
+        var comments = dbContext.Comments.Where(c => c.PostId == id);
+        dbContext.Comments.RemoveRange(comments);
+
         dbContext.Posts?.Remove(post);
         dbContext.SaveChanges();
 
         TempData["SuccessMessage"] = "Post deleted successfully.";
-        if (!string.IsNullOrEmpty(ReturnUrl))
+        if (!string.IsNullOrEmpty(ReturnUrl) && !ReturnUrl.Contains($"/posts/{id}"))
         {
-            return Redirect(ReturnUrl);  // Redirect to the original page
+            return Redirect(ReturnUrl);
         }
-        return new RedirectResult("/posts");  // Redirect after deletion
+
+        return Redirect("/posts");
     }
 }

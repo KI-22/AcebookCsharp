@@ -44,7 +44,7 @@
         <p class="post-meta-date">Posted on: @ViewBag.Post.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
 
     <div>
-    <div class="like-section">
+    <div class="like-section-postpage">
         @{
             var likeOrUnlike = ViewBag.PostLikeUnlike as string;
             string methodLikeUnlike;
@@ -81,6 +81,14 @@
                 {
                     <span>💬0 comments</span>
                 }
+            }
+            @if (Context.Session.GetInt32("user_id") == ViewBag.Post.UserId)
+            {
+                <form action="@Url.Action("Delete", "Posts", new { id = ViewBag.Post.Id })" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ReturnUrl" value="@Context.Request.Path" />
+                    <button type="submit" class="delete-button-postpage">Delete Post</button>
+                </form>
             }
         </div>
     </div>
