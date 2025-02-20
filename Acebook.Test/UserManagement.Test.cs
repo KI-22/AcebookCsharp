@@ -12,6 +12,7 @@ namespace Acebook.Test
   {
     ChromeDriver driver;
     Faker faker;
+    private string testPassword = "Admin123*";
 
     [SetUp]
     public void Setup()
@@ -24,6 +25,48 @@ namespace Acebook.Test
     [TearDown]
     public void TearDown() {
       driver.Quit();
+    }
+
+    private void CreateAccount(string username, string email, bool isPrivate)
+    {
+      string name = faker.Name.FullName();
+      string password = testPassword;
+
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signup");
+      driver.FindElement(By.Name("FullName")).SendKeys(name);
+      driver.FindElement(By.Name("Name")).SendKeys(username);
+      driver.FindElement(By.Name("Email")).SendKeys(email);
+      driver.FindElement(By.Name("Password")).SendKeys(password);
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
+      driver.FindElement(By.Name("email")).SendKeys(email);
+      driver.FindElement(By.Name("password")).SendKeys(password);
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+      if (isPrivate)
+      {
+        driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
+        driver.FindElement(By.Name("email")).SendKeys(email);
+        driver.FindElement(By.Name("password")).SendKeys(password);
+        driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+        driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{username}/edit");
+        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+        IWebElement privacyCheckbox = driver.FindElement(By.XPath("//input[@type='checkbox' and @id='IsPrivate']"));
+        if (!privacyCheckbox.Selected)
+        {
+          privacyCheckbox.Click();
+        }
+        driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+      }
+    }
+
+    private void Login(string email)
+    {
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
+      driver.FindElement(By.Name("email")).SendKeys(email);
+      driver.FindElement(By.Name("password")).SendKeys(testPassword);
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
     }
 
     [Test]
@@ -306,5 +349,64 @@ namespace Acebook.Test
   
       Assert.That(emailError.Text.Trim(), Is.EqualTo("Email is already in use."));
     }
+
+    // Test 12: Profile Privacy - Block Non-Friends
+    [Test]
+    public void ProfilePrivacy_BlockNonFriends_12()
+    {
+      string privateUsername = faker.Internet.UserName();
+      string publicUsername = faker.Internet.UserName();
+      string email1 = faker.Internet.Email();
+      string email2 = faker.Internet.Email();
+
+      // create two users
+      CreateAccount(privateUsername, email1, true);
+      CreateAccount(publicUsername, email2, false);
+
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{privateUsername}");
+      WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
+      IWebElement restrictedMessage = wait.Until(drv => drv.FindElement(By.CssSelector(".private-profile")));
+      Assert.That(restrictedMessage.Text.Trim(), Is.EqualTo("This profile is private."));
+    }
+
+    [Test]
+    public void EditProfile_SuccessfulUpdate_1()
+    {
+      string username = faker.Internet.UserName();
+      string email = faker.Internet.Email();
+      string newBio = "This is my updated bio!";
+      string newFullName = faker.Name.FullName();
+
+      // Create account and login
+      CreateAccount(username, email, false);
+      Login(email);
+
+      // Go to the edit page
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{username}/edit");
+
+      // Update profile details
+      driver.FindElement(By.Name("FullName")).Clear();
+      driver.FindElement(By.Name("FullName")).SendKeys(newFullName);
+
+      driver.FindElement(By.Name("Bio")).Clear();
+      driver.FindElement(By.Name("Bio")).SendKeys(newBio);
+
+      // Submit the form
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+      // Go back to the profile page
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{username}");
+
+      // Verify that profile updates were saved
+      IWebElement bioElement = driver.FindElement(By.CssSelector(".user-bio-profile"));
+      Assert.That(bioElement.Text.Trim(), Is.EqualTo(newBio));
+
+      IWebElement nameElement = driver.FindElement(By.CssSelector(".user-name-profile"));
+      Assert.That(nameElement.Text.Trim(), Is.EqualTo(username));
+    }
+
+
+
+    
   }
 }
