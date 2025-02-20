@@ -1,46 +1,123 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+/* 🌌 Space-Themed Background */
+body {
+    background: url('/images/space-background6.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #ffffff;
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* ✨ Navbar */
+.navbar {
+    background: rgba(0, 0, 0, 0.8);
+    border-bottom: 2px solid #4d4dff;
+    box-shadow: 0 0 15px rgba(77, 77, 255, 0.7);
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff !important;
+    text-shadow: 0 0 8px #4d4dff;
+}
+
+/* 🔍 Search Bar */
+.search-input {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid #4d4dff;
+    border-radius: 25px;
+    padding: 8px 15px;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.search-button {
+    background: #4d4dff;
+    border: none;
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 25px;
+    transition: 0.3s;
+}
+
+.search-button:hover {
+    background: #6767ff;
+    box-shadow: 0 0 10px #6767ff;
+}
+
+/* 🏠 Home Page */
 .home-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80vh; /* Adjust to keep space for navbar and footer */
+    height: 80vh;
     text-align: center;
 }
 
 .home-box {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    max-width: 600px;
-    width: 90%;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
 }
 
 .home h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: bold;
-    color: #b489dd;
-    text-shadow: 0px 0px 15px #b489dd;
-    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 0px 0px 15px #4d4dff;
 }
 
-/* Buttons */
-.home-buttons a {
-    display: inline-block;
-    background: rgba(180, 85, 255, 0.8);
-    color: white;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-decoration: none;
-    padding: 10px 20px;
-    margin: 10px;
+/* 🌠 Buttons */
+.btn-primary {
+    color: #fff;
+    background: #4d4dff;
+    border: none;
     border-radius: 25px;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0px 0px 10px rgba(180, 85, 255, 0.5);
+    padding: 10px 20px;
+    transition: 0.3s;
+    box-shadow: 0px 0px 10px rgba(77, 77, 255, 0.7);
 }
 
-.home-buttons a:hover {
-    background: rgba(210, 105, 255, 1);
-    transform: scale(1.05);
-    box-shadow: 0px 0px 15px rgba(210, 105, 255, 0.8);
+.btn-primary:hover {
+    background: #6767ff;
+    box-shadow: 0 0 15px #6767ff;
+}
+
+/* ✍️ Form Inputs */
+input, textarea {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #4d4dff;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 10px #4d4dff;
+}
+
+/* 📜 Footer */
+.footer {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    box-shadow: 0 -5px 15px rgba(77, 77, 255, 0.7);
+}
+
+/* 🌌 Style the "Home" Button in Navbar */
+.navbar-nav .nav-item .nav-link {
+    color: #ffffff !important; /* Change text color */
+    text-shadow: 0 0 10px #4d4dff; /* Add glowing effect */
+    transition: 0.3s;
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+    color: #4d4dff !important;
+    text-shadow: 0 0 15px #6767ff;
 }
