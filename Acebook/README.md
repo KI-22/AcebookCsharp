@@ -138,3 +138,38 @@ create account form now asks for Name as well.
 edit account allows to edit a name,  choose a bio and choose private or public profile.
 added search user route in user controller
 aded navigation bar that finds user by username
+
+### Changed the order of the localhost connections in Acebook/Properties/launchSettings.json    
+
+  from "applicationUrl": "https://localhost:7196;http://localhost:5287" to "applicationUrl": "http://localhost:5287;https://localhost:7196"
+
+### Nullable warnings were resolved
+  csharp-acebook-mvc-template/Acebook/Controllers/UsersController.cs(27,7)
+  csharp-acebook-mvc-template/Acebook/Controllers/PostsController.cs(33,7)
+  csharp-acebook-mvc-template/Acebook/Controllers/SessionsController.cs(27,20)
+
+### Some Changes in Tests to stop warnings (Assert is updated)
+  csharp-acebook-mvc-template/Acebook.Test/LandingPageTests.cs(25,5):constraint model, Assert.That(actual, Is.EqualTo(expected)), was used instead of the classic model, Assert.AreEqual(expected, actual)
+
+  csharp-acebook-mvc-template/Acebook.Test/UserManagement.Test.cs(37,7): constraint model, Assert.That(actual, Is.EqualTo(expected)), was used instead of the classic model, Assert.AreEqual(expected, actual)
+
+  csharp-acebook-mvc-template/Acebook.Test/UserManagement.Test.cs(62,7):constraint model, Assert.That(actual, Is.EqualTo(expected)), was used instead of the classic model, Assert.AreEqual(expected, actual)
+
+## Pull Request10 RemovePosts
+  Added a delete action to the PostsController.
+  Updated the Profile and Posts/Index views to display the "Delete Post" button.
+  Improved styling for the Profile and Posts/Index pages.
+
+
+## Pull Request17 Add Comments
+  The Comments table has been created in the models.
+  Comment relationships have been set up in AcebookDbContext.
+  The GetComments and CreateComment actions have been implemented in CommentsController.
+  Comments are displayed under each individual post, along with an add comment form in Views/Posts/GetPost.cshtml.
+  Comments are ordered newest first, showing the timestamp of when they were posted.
+  Each comment is displayed with the commenter's name and profile picture.
+
+  //Next Steps:
+  Display the number of likes and comments on individual post pages.
+  Show the comment count for each post on the feed and profile pages.
+  Allow users to delete their own comments.

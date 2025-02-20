@@ -76,6 +76,16 @@ public class PostsController : Controller
         Dictionary<int, List<int>> dictLikeUnlike = likedCheck.ToDictionary(l => l.PostId, l => l.UserIds);
         ViewBag.LikeUnlike = dictLikeUnlike;
 
+        var commentsCount = dbContext.Comments
+            .Where(c => c.PostId.HasValue)
+            .GroupBy(c => c.PostId.Value)
+            .Select(g => new { PostId = g.Key, Count = g.Count() })
+            .ToList();
+
+        // Convert to dictionary: PostId -> Comment Count
+        Dictionary<int, int> dictPostComments = commentsCount.ToDictionary(c => c.PostId, c => c.Count);
+        ViewBag.CommentsCount = dictPostComments;
+
         // current URL
         ViewBag.CurrentURL = Request.Path + Request.QueryString;
 
@@ -202,6 +212,14 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
             ViewBag.PostLikeUnlike = isLiked ? "Unlike" : "Like";
         }
 
+        if (dbContext.Comments != null)
+        {
+            int commentsCountForPost = dbContext.Comments
+                .Where(c => c.PostId == postId)
+                .Count();
+            ViewBag.PostCommentsCount = commentsCountForPost;
+        }
+
         // current URL
         ViewBag.CurrentURL = Request.Path + Request.QueryString;
 
@@ -238,14 +256,18 @@ public IActionResult Create(Post post, IFormFile postImageFile, string postImage
         var likes = dbContext.Likes.Where(l => l.PostId == id);
         dbContext.Likes.RemoveRange(likes);
 
+        var comments = dbContext.Comments.Where(c => c.PostId == id);
+        dbContext.Comments.RemoveRange(comments);
+
         dbContext.Posts?.Remove(post);
         dbContext.SaveChanges();
 
         TempData["SuccessMessage"] = "Post deleted successfully.";
-        if (!string.IsNullOrEmpty(ReturnUrl))
+        if (!string.IsNullOrEmpty(ReturnUrl) && !ReturnUrl.Contains($"/posts/{id}"))
         {
-            return Redirect(ReturnUrl);  // Redirect to the original page
+            return Redirect(ReturnUrl);
         }
-        return new RedirectResult("/posts");  // Redirect after deletion
+
+        return Redirect("/posts");
     }
 }

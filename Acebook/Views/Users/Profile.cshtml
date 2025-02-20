@@ -134,9 +134,8 @@
                                     }
 
                                 <form method="post" asp-controller="Likes" asp-action="@methodLikeUnlike" asp-route-postId="@post.Id" asp-route-returnUrl="@ViewBag.CurrentURL">
-                                      <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
+                                    <button type="submit" class="btn btn-primary">@likeOrUnlike</button>
                                 </form>
-
                                 <div class="reactions-profile">
                                     <div class="like-count">
                                     @{
@@ -155,9 +154,29 @@
                                             <span>👍-2 likes</span> // testing
                                         }
                                     }
-                                </div>
+                                    </div>
+                                    <div class="comment-count">
+                                        <a href="@Url.Action("GetPost", "Posts", new { postId = post.Id })" class="post-link">
+                                        @{
+                                            var commentsCount = ViewBag.CommentsCount as Dictionary<int, int>;
+                                            if (commentsCount != null)
+                                            {   
+                                                if (commentsCount.ContainsKey(post.Id))
+                                                {
+                                                    <span>💬@commentsCount[post.Id] comments</span>
+                                                }
+                                                else{
+                                                    <span>💬0 comments</span>
+                                                }
+                                            }
+                                            else 
+                                            {
+                                                <span>💬0 comments</span>
+                                            }
+                                        }
+                                        </a>
+                                    </div>
                                 </div>                                
-                                  
                                     @if (Context.Session.GetInt32("user_id") == post.UserId)
                                     {
                                         <form asp-controller="Posts" asp-action="Delete" method="post" asp-route-id="@post.Id">

@@ -151,6 +151,17 @@ public class UsersController : Controller
 
             ViewBag.LikeUnlike = dictLikeUnlike;
 
+            var commentsCount = dbContext.Comments
+            .Where(c => c.PostId.HasValue)
+            .GroupBy(c => c.PostId.Value)
+            .Select(g => new { PostId = g.Key, Count = g.Count() })
+            .ToList();
+
+        // Convert to dictionary: PostId -> Comment Count
+            Dictionary<int, int> dictPostComments = commentsCount.ToDictionary(c => c.PostId, c => c.Count);
+            ViewBag.CommentsCount = dictPostComments;
+            
+
             // current URL
             ViewBag.CurrentURL = Request.Path + Request.QueryString;
 

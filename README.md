@@ -133,3 +133,8 @@ To rollback the second, you again use `dotnet ef database update` but this time 
   ## Like/Unlike updates
   The like/unlike buttons now works across all 3x areas (feed, profile page, and individual post page). When a like button is pressed, it adds an entry with the relevant post id and user id to the Likes table. The page will then be refreshed, with the button changed to Unlike. When the unlike button is pressed, the relevant like entry in the Likes table is then removed from the table. 
   Files edited include: Posts/Index.cshtml, LikesController.cs, PostController.cs, UsersController.cs, Posts/GetPost.cshtml, Users/Profile.cshtml.
+
+## Pull Request23 Add Comments
+The number of comments is now displayed on individual post pages, the feed, and profile pages.
+Users can now delete their own comments.
+Clicking the comment count on posts and profile pages redirects users to the individual post page.
