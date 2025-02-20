@@ -27,6 +27,9 @@ namespace Acebook.Test
       driver.Quit();
     }
 
+
+    // Helper methods
+
     private void CreateAccount(string username, string email, bool isPrivate)
     {
       string name = faker.Name.FullName();
@@ -67,6 +70,12 @@ namespace Acebook.Test
       driver.FindElement(By.Name("email")).SendKeys(email);
       driver.FindElement(By.Name("password")).SendKeys(testPassword);
       driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+    }
+
+    public void Logout()
+    {
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/posts");
+      driver.FindElement(By.CssSelector("button.btn.btn-secondary")).Click();
     }
 
     [Test]
@@ -370,7 +379,7 @@ namespace Acebook.Test
     }
 
     [Test]
-    public void EditProfile_SuccessfulUpdate_1()
+    public void EditProfile_SuccessfulUpdate_13()
     {
       string username = faker.Internet.UserName();
       string email = faker.Internet.Email();
@@ -403,6 +412,30 @@ namespace Acebook.Test
 
       IWebElement nameElement = driver.FindElement(By.CssSelector(".user-name-profile"));
       Assert.That(nameElement.Text.Trim(), Is.EqualTo(username));
+    }
+
+    [Test]
+    public void EditProfile_UnauthorizedAccess_14()
+    {
+      string user1 = faker.Internet.UserName();
+      string email1 = faker.Internet.Email();
+
+      string user2 = faker.Internet.UserName();
+      string email2 = faker.Internet.Email();
+
+      // Create two accounts
+      CreateAccount(user1, email1, false);
+      CreateAccount(user2, email2, false);
+
+      // Log in as user1
+      Login(email1);
+
+      // Try to access user2's edit page
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{user2}/edit");
+
+      // Verify the page returns "403 Forbidden" or an error message
+      IWebElement errorMessage = driver.FindElement(By.CssSelector(".alert-danger"));
+      Assert.That(errorMessage.Text.Trim(), Is.EqualTo("You are not allowed to edit someone else's profile."));
     }
 
 
