@@ -58,6 +58,12 @@ public class UsersController : Controller
         user.Bio = "";
         user.IsPrivate = false;
 
+        // Set default profile picture if not provided
+        if (string.IsNullOrEmpty(user.profilePicture))
+        {
+            user.profilePicture = "/images/default-picture/default.png"; // Adjust the path as needed
+        }
+
         dbContext.Users?.Add(user);
         dbContext.SaveChanges();
         return new RedirectResult("/signin");
