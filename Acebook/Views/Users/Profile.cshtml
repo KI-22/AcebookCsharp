@@ -21,6 +21,12 @@
         @errorMessage
     </div>
 }
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <div class="profile-buttons">
     @if (Context.Session.GetString("Username") != null && Context.Session.GetString("Username") != Model.Name)
     {
