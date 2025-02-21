@@ -176,7 +176,8 @@ public class UsersController : Controller
         var loggedInUser = HttpContext.Session.GetString("Username");
         if (loggedInUser != username)
         {
-            return Forbid(); // Prevent unauthorized access
+            TempData["ErrorMessage"] = "You are not allowed to edit someone else's profile.";
+            return RedirectToAction("Profile", "Users", new { username = username });
         }
         
         using (var dbContext = new AcebookDbContext())
@@ -205,7 +206,8 @@ public class UsersController : Controller
         var loggedInUser = HttpContext.Session.GetString("Username");
         if (loggedInUser != username)
         {
-            return Forbid(); // Prevent unauthorized access
+            TempData["ErrorMessage"] = "You are not allowed to edit someone else's profile.";
+            return RedirectToAction("Profile", "Users", new { username = username });
         }
         
         using (var dbContext = new AcebookDbContext())

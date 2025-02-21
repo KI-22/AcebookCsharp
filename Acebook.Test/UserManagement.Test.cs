@@ -12,6 +12,7 @@ namespace Acebook.Test
   {
     ChromeDriver driver;
     Faker faker;
+    private string testPassword = "Admin123*";
 
     [SetUp]
     public void Setup()
@@ -24,6 +25,58 @@ namespace Acebook.Test
     [TearDown]
     public void TearDown() {
       driver.Quit();
+    }
+
+
+    // Helper methods
+
+    private void CreateAccount(string username, string email, bool isPrivate)
+    {
+      string name = faker.Name.FullName();
+      string password = testPassword;
+
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signup");
+      driver.FindElement(By.Name("FullName")).SendKeys(name);
+      driver.FindElement(By.Name("Name")).SendKeys(username);
+      driver.FindElement(By.Name("Email")).SendKeys(email);
+      driver.FindElement(By.Name("Password")).SendKeys(password);
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
+      driver.FindElement(By.Name("email")).SendKeys(email);
+      driver.FindElement(By.Name("password")).SendKeys(password);
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+      if (isPrivate)
+      {
+        driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
+        driver.FindElement(By.Name("email")).SendKeys(email);
+        driver.FindElement(By.Name("password")).SendKeys(password);
+        driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+        driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{username}/edit");
+        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+        IWebElement privacyCheckbox = driver.FindElement(By.XPath("//input[@type='checkbox' and @id='IsPrivate']"));
+        if (!privacyCheckbox.Selected)
+        {
+          privacyCheckbox.Click();
+        }
+        driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+      }
+    }
+
+    private void Login(string email, string password)
+    {
+
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
+      driver.FindElement(By.Name("email")).SendKeys(email);
+      driver.FindElement(By.Name("password")).SendKeys(password);
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+    }
+
+    public void Logout()
+    {
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/posts");
+      driver.FindElement(By.CssSelector("button.btn.btn-secondary")).Click();
     }
 
     [Test]
@@ -305,6 +358,187 @@ namespace Acebook.Test
       IWebElement emailError = wait.Until(drv => drv.FindElement(By.CssSelector("span[data-valmsg-for='Email']")));
   
       Assert.That(emailError.Text.Trim(), Is.EqualTo("Email is already in use."));
+    }
+
+    // Test 12: Profile Privacy - Block Non-Friends
+    [Test]
+    public void ProfilePrivacy_BlockNonFriends_12()
+    {
+      string privateUsername = faker.Internet.UserName();
+      string publicUsername = faker.Internet.UserName();
+      string email1 = faker.Internet.Email();
+      string email2 = faker.Internet.Email();
+
+      // create two users
+      CreateAccount(privateUsername, email1, true);
+      CreateAccount(publicUsername, email2, false);
+
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{privateUsername}");
+      WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
+      IWebElement restrictedMessage = wait.Until(drv => drv.FindElement(By.CssSelector(".private-profile")));
+      Assert.That(restrictedMessage.Text.Trim(), Is.EqualTo("This profile is private."));
+    }
+
+    [Test]
+    public void EditProfile_SuccessfulUpdate_13()
+    {
+      string username = faker.Internet.UserName();
+      string email = faker.Internet.Email();
+      string newBio = "This is my updated bio!";
+      string newFullName = faker.Name.FullName();
+
+      // Create account and login
+      CreateAccount(username, email, false);
+      Login(email, testPassword);
+
+      // Go to the edit page
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{username}/edit");
+
+      // Update profile details
+      driver.FindElement(By.Name("FullName")).Clear();
+      driver.FindElement(By.Name("FullName")).SendKeys(newFullName);
+
+      driver.FindElement(By.Name("Bio")).Clear();
+      driver.FindElement(By.Name("Bio")).SendKeys(newBio);
+
+      // Submit the form
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+      // Go back to the profile page
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{username}");
+
+      // Verify that profile updates were saved
+      IWebElement bioElement = driver.FindElement(By.CssSelector(".user-bio-profile"));
+      Assert.That(bioElement.Text.Trim(), Is.EqualTo(newBio));
+
+      IWebElement nameElement = driver.FindElement(By.CssSelector(".user-name-profile"));
+      Assert.That(nameElement.Text.Trim(), Is.EqualTo(username));
+    }
+
+    [Test]
+    public void EditProfile_UnauthorizedAccess_14()
+    {
+      string user1 = faker.Internet.UserName();
+      string email1 = faker.Internet.Email();
+
+      string user2 = faker.Internet.UserName();
+      string email2 = faker.Internet.Email();
+
+      // Create two accounts
+      CreateAccount(user1, email1, false);
+      CreateAccount(user2, email2, false);
+
+      // Log in as user1
+      Login(email1, testPassword);
+
+      // Try to access user2's edit page
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{user2}/edit");
+
+      // Verify the page returns "403 Forbidden" or an error message
+      IWebElement errorMessage = driver.FindElement(By.CssSelector(".alert-danger"));
+      Assert.That(errorMessage.Text.Trim(), Is.EqualTo("You are not allowed to edit someone else's profile."));
+    }
+
+    [Test]
+    public void ChangePassword_Success_15()
+    {
+      string username = faker.Internet.UserName();
+      string email = faker.Internet.Email();
+      string oldPassword = "Admin123*";
+      string newPassword = "NewPass123!";
+
+      // Create an account
+      CreateAccount(username, email, false);
+      Login(email, oldPassword);
+
+      // Go to change password page
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{username}/change-password");
+
+      // Enter old password
+      driver.FindElement(By.Name("OldPassword")).SendKeys(oldPassword);
+
+      // Enter new password
+      driver.FindElement(By.Name("NewPassword")).SendKeys(newPassword);
+
+      // Submit the form
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+      // Logout
+      Logout();
+
+      // Try logging in with the new password
+      Login(email, newPassword);
+
+      // Verify successful login
+      string currentUrl = driver.Url;
+      Assert.That(currentUrl, Is.EqualTo("http://127.0.0.1:5287/posts"));
+    }
+
+    [Test]
+    public void ChangePassword_WrongOldPassword_16()
+    {
+      string username = faker.Internet.UserName();
+      string email = faker.Internet.Email();
+      string oldPassword = "Admin123*";
+      string newPassword = "NewPass123!";
+
+      // Create an account and sign in
+      CreateAccount(username, email, false);
+      Login(email, oldPassword);
+
+      // Go to change password page
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{username}/change-password");
+
+      // Enter wrong old password
+      driver.FindElement(By.Name("OldPassword")).SendKeys("WrongPassword!");
+
+      // Enter new password
+      driver.FindElement(By.Name("NewPassword")).SendKeys(newPassword);
+
+      // Submit the form
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+      // Verify error message appears
+      IWebElement errorMessage = driver.FindElement(By.CssSelector(".text-danger"));
+      Assert.That(errorMessage.Text.Trim(), Is.EqualTo("Incorrect old password."));
+
+      // Ensure old password still works
+      Logout();
+      Login(email, oldPassword);
+      string currentUrl = driver.Url;
+      Assert.That(currentUrl, Is.EqualTo("http://127.0.0.1:5287/posts"));
+    }
+
+    [Test]
+    public void ChangePassword_OldPasswordFailsAfterReset_17()
+    {
+      string username = faker.Internet.UserName();
+      string email = faker.Internet.Email();
+      string oldPassword = "Admin123*";
+      string newPassword = "NewPass123!";
+
+      // Create an account and sign in
+      CreateAccount(username, email, false);
+      Login(email, oldPassword);
+
+      // Change the password
+      driver.Navigate().GoToUrl($"http://127.0.0.1:5287/{username}/change-password");
+      driver.FindElement(By.Name("OldPassword")).SendKeys(oldPassword);
+      driver.FindElement(By.Name("NewPassword")).SendKeys(newPassword);
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+      // Logout
+      Logout();
+
+      // Try logging in with old password (should fail)
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signin");
+      driver.FindElement(By.Name("email")).SendKeys(email);
+      driver.FindElement(By.Name("password")).SendKeys(oldPassword);
+      driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+      // Ensure login failed
+      IWebElement errorMessage = driver.FindElement(By.CssSelector(".alert-danger"));
+      Assert.That(errorMessage.Text.Trim(), Is.EqualTo("Invalid email or password."));
     }
   }
 }
