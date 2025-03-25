@@ -1,6 +1,11 @@
-# AceBook
-## ** currently editing **
-Note: this is a copy of the original private repo ([here](https://github.com/aysinakpinar/csharp-acebook-mvc-umbrella)).
+# AceBook - README in progress
+
+**Note:** this is a copy of the original private repo ([here](https://github.com/aysinakpinar/csharp-acebook-mvc-umbrella)).
+
+## Facebook Clone
+Group project | C# | 10-days | Makers Software Engineering Bootcamp
+
+
 
 ## Quickstart
 
