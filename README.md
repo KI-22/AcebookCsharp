@@ -1,5 +1,6 @@
 # AceBook
-## ** currently editing (original repos Private) **
+## ** currently editing **
+Original repo (private): [link](https://github.com/aysinakpinar/csharp-acebook-mvc-umbrella)
 
 ## Quickstart
 
