@@ -5,8 +5,10 @@
 ## Facebook Clone
 Group project | C# | 10-days | Makers Software Engineering Bootcamp
 
-My Contributions:
-- Like button functionality
+#### My Contributions:
+- 'Like' button functionality (on all relevant pages)
+- User stories
+- Planning for testing
 - Wireframes
 
 
