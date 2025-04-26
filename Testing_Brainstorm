@@ -1,0 +1,129 @@
+/*
+
+
+// // CREATE ACCOUNT // // 
+
+Sign up: valid email, username, password
+^^ page redirect to Feed
+
+Sign up: invalid email (e.g. no @, or not .com)
+^^ show error message on page
+
+Sign up: email already in use
+^^ show error message on page
+
+Sign up: username already in use << TBC!
+^^ show error message on page
+
+Sign up: password not valid (needs 8+ chars, number, lower/uppercase, special character)
+^^ show error message on page
+
+Sign up: empty username/email/password
+^^ show error message on page
+
+
+
+// // LOGIN // // 
+
+Login: valid email, password
+^^ page redirect to Feed
+
+Login: email not in database (password OK)
+^^ show error message on page
+
+Login: invalid email (e.g. no @, or not .com) (password OK)
+^^ show error message on page
+
+Login: password not valid (needs 8+ chars, number, lower/uppercase, special character) (email OK)
+^^ show error message on page
+
+Login: empty username/email/password
+^^ show error message on page
+
+
+
+// // LOGOUT // // 
+
+Logout: redirect to Login (+ check session closed?)
+
+
+
+// // CREATE A POST // //
+
+Create Post: valid post (text)
+^^ should be viewable from Feed and My Profile
+
+Create Post: valid post (photo)
+^^ should be viewable from Feed and My Profile
+
+Create Post: valid post (text + photo)
+^^ should be viewable from Feed and My Profile
+
+Create Post: invalid, empty post
+^^ show error message on page
+
+Create Post: invalid, max. word count (200? TBC)
+^^ show error message on page
+
+
+// // LIKE A POST // //
+
+Like: select like button
+^^ check number of likes on post has increased by 1
+^^ also check button changes to 'unlike'
+
+Unlike: unlike selected (/like button pressed twice)
+^^ unlikes a post (button should have changed to 'unlike' between clicks)
+^^ number of likes should match original number
+
+Like: TBC, compare number of likes on feed vs indiv post page
+^^ check that they match (?)
+
+
+
+// // COMMENT A POST // //
+
+Create Comment: valid, text post
+^^ should be viewable from indiv post's page
+
+Create Comment: invalid, empty post
+^^ show error message on page
+
+Create Comment: invalid, max. word count (200? TBC)
+^^ show error message on page
+
+Remove Comment: TBC, 'remove' button selected
+^^ check that comment no longer appears on the indiv post's page
+
+
+
+// // FRIENDSHIPS // // 
+
+Send friend request: on a profile, select 'Send friend request' button
+^^ check button changes to 'Requested'
+^^ check in database log
+^^ login to other user's account, check request was received
+
+Receive a friend request: accept friend request
+^^ check a request received, and when 'Accept' selected...
+^^ ... check appears on requester appears in friends table
+^^ ... check appears on requester's profile page, button should now be 'Remove friend'
+
+Receive a friend request: decline friend request
+^^ check a request received, and when 'Decline' selected...
+^^ ... check requester does not appear in friends table
+^^ ... check does not appear on requester's profile page, no button (add/remove friend) should now appear
+
+Send friend request: 2nd request, after first rejected
+^^ reshow 'send friend request' button << TBC! (otherwise remove button?)
+
+
+
+
+GENERAL/OTHER:
+- Check pages exist
+- check connections from each page (?)
+- try to access pages when not signed in (be redirected)
+
+
+*/
